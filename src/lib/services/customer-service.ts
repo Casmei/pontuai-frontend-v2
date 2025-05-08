@@ -1,55 +1,43 @@
-import { logtoConfig } from "@/config/logto";
-import {
-  Configuration,
-  CustomerApi,
-  CustomerControllerCreateRequest,
-  CustomerControllerGetAllRequest,
-} from "@/gen";
-import { getAccessTokenRSC } from "@logto/next/server-actions";
+import { Configuration, CustomerApi, CustomerControllerGetAllRequest } from "@/gen"
+import { useLogto } from "@logto/react"
+import { useQuery } from "@tanstack/react-query"
 
-const API_URL = process.env.API_URL;
-const apiClient = new CustomerApi(
-  new Configuration({
-    basePath: API_URL,
-    accessToken: async () => {
-      return await getAccessTokenRSC(logtoConfig, logtoConfig.resources![0]);
+const API_URL = import.meta.env.VITE_API_URL
+
+const createApiClient = (accessToken: string) =>
+  new CustomerApi(new Configuration({ basePath: API_URL, accessToken }))
+
+const useCustomerService = () => {
+  const logto = useLogto()
+
+  const getClient = async () => {
+    console.log("Logto is authenticated:", logto)
+
+    if (!logto.isAuthenticated) {
+      throw new Error("Logto não autenticado")
+    }
+
+    const token = await logto.getAccessToken("https://pontuai-api.kontact.com.br")
+
+    if (!token) {
+      throw new Error("Token não encontrado")
+    }
+
+    return createApiClient(token)
+  }
+
+  return { getClient, isAuthenticated: logto.isAuthenticated }
+}
+
+export function useGetCustomers({ xTenantId, query }: CustomerControllerGetAllRequest) {
+
+  const { getClient } = useCustomerService();
+
+  return useQuery({
+    queryKey: ["customer", query],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.customerControllerGetAll({ xTenantId, query })
     },
   })
-);
-
-export async function getCustomers(data: CustomerControllerGetAllRequest) {
-  try {
-    const response = await apiClient.customerControllerGetAll(data, {
-      cache: "force-cache",
-      next: { tags: [getCustomers.name] },
-    });
-
-
-    return [null, response] as const;
-  } catch (e) {
-    console.error(e);
-    return [new Error("Falha ao buscar clientes"), null] as const;
-  }
-}
-
-export async function getCustomerById(storeId: string, customerId: string) {
-  return null;
-}
-
-export async function createCustomer(data: CustomerControllerCreateRequest) {
-  try {
-    const response = await apiClient.customerControllerCreate(data);
-    return [null, response] as const;
-  } catch (e) {
-    console.error(e);
-    return [new Error("Falha ao criar cliente"), null] as const;
-  }
-}
-
-export async function updateCustomerPoints(
-  storeId: string,
-  customerId: string,
-  points: number
-) {
-  return null;
 }

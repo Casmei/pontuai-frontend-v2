@@ -25,9 +25,13 @@ export function StoreCard({ store }: StoreCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Link to="/stores/$storeId" params={{
-          storeId: store.id,
-        }} className="w-full">
+        <Link
+          to="/stores/$storeId"
+          params={{
+            storeId: store.id,
+          }}
+          className="w-full"
+        >
           <Button className="w-full">
             Gerenciar
             <ArrowRight className="ml-2 h-4 w-4" />

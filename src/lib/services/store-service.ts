@@ -16,7 +16,6 @@ const useTenantsService = () => {
   const logto = useLogto()
 
   const getClient = async () => {
-
     console.log("Logto is authenticated:", logto)
 
     if (!logto.isAuthenticated) {

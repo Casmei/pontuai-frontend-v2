@@ -10,7 +10,10 @@ export function RecentTransactionsSkeleton() {
       <CardContent>
         <div className="space-y-4">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+            <div
+              key={i}
+              className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
+            >
               <div className="space-y-2">
                 <Skeleton className="h-4 w-[120px]" />
                 <Skeleton className="h-3 w-[80px]" />

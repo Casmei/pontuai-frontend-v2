@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { createStore } from "@/lib/services/store-service"
 import { toast } from "sonner"
 
@@ -38,7 +45,9 @@ export function StoreForm() {
     try {
       setIsLoading(true)
       //TODO: PEuzin deixa as coisas pela metade, e eu tmb
-      const storeId = await createStore({ createTenantDto: { cnpj: values.name, name: values.name, slug: values.name } })
+      const storeId = await createStore({
+        createTenantDto: { cnpj: values.name, name: values.name, slug: values.name },
+      })
       toast.success("Estabelecimento criado", {
         description: "Seu estabelecimento foi criado com sucesso.",
       })

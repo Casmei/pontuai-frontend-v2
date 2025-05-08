@@ -1,14 +1,21 @@
 import { formatDate, formatCurrency } from "@/lib/utils"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { getTransactions } from "@/lib/services/transaction-service";
+import { getTransactions } from "@/lib/services/transaction-service"
 
 interface TransactionTableProps {
   storeId: string
 }
 
 export async function TransactionTable({ storeId }: TransactionTableProps) {
-  const [err, transactions] = await getTransactions({ xTenantId: storeId });
+  const [err, transactions] = await getTransactions({ xTenantId: storeId })
 
   if (err) {
     return (
@@ -23,7 +30,9 @@ export async function TransactionTable({ storeId }: TransactionTableProps) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
         <h3 className="text-lg font-semibold">Nenhuma transação registrada</h3>
-        <p className="text-sm text-muted-foreground mt-2">Registre transações usando o formulário acima.</p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Registre transações usando o formulário acima.
+        </p>
       </div>
     )
   }

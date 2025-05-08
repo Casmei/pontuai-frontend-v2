@@ -1,10 +1,6 @@
 import { ChevronRight, type LucideIcon } from "lucide-react"
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -18,7 +14,7 @@ import {
 import { Link, useParams } from "@tanstack/react-router"
 
 type Props = {
-  title: string,
+  title: string
   items: {
     title: string
     url: string
@@ -57,10 +53,7 @@ function CollapsibleNavItem(item: Props["items"][0]) {
   )
 }
 
-export function NavCommon({
-  items,
-  title,
-}: Props) {
+export function NavCommon({ items, title }: Props) {
   const params = useParams({ from: "/stores/$storeId" })
   const { storeId } = params
 
@@ -76,26 +69,24 @@ export function NavCommon({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              {item.items?.length && (
-                <CollapsibleNavItem {...item} />
-              )}
+              {item.items?.length && <CollapsibleNavItem {...item} />}
 
               {!item.items?.length && (
                 <Link to={item.url} params={{ storeId }}>
                   {({ isActive }) => {
-
-                    return (<SidebarMenuButton isActive={isActive && item.url != '/stores/$storeId/'}>
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>)
+                    return (
+                      <SidebarMenuButton isActive={isActive && item.url != "/stores/$storeId/"}>
+                        {item.icon && <item.icon />}
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    )
                   }}
-
                 </Link>
               )}
             </SidebarMenuItem>
           </Collapsible>
         ))}
       </SidebarMenu>
-    </SidebarGroup >
+    </SidebarGroup>
   )
 }

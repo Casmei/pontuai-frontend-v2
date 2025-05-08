@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { useCallback, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useCallback, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -15,31 +15,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { TenantConfig } from "@/gen";
-import { updatePointConfigAction } from "@/action/update-point-config";
+} from "@/components/ui/form"
+import { toast } from "sonner"
+import { TenantConfig } from "@/gen"
+import { updatePointConfigAction } from "@/action/update-point-config"
 
 const formSchema = z.object({
   pointsForMoneySpent: z.coerce.number().min(0.1, "Deve ser pelo menos 0.1"),
   expirationInDays: z.coerce.number().int().min(1, "Deve ser pelo menos 1 dia"),
-  minimumValueForWinPoints: z.coerce
-    .number()
-    .min(1, "Deve ser pelo menos 1 ponto"),
-});
+  minimumValueForWinPoints: z.coerce.number().min(1, "Deve ser pelo menos 1 ponto"),
+})
 
 interface ConfigFormProps {
-  storeId: string;
-  initialData: TenantConfig;
+  storeId: string
+  initialData: TenantConfig
 }
 
 export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const brlFormatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  });
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,10 +46,10 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
       expirationInDays: initialData.pointConfig.expirationInDays,
       minimumValueForWinPoints: initialData.pointConfig.minimumValueForWinPoints,
     },
-  });
+  })
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const [error] = await updatePointConfigAction({
@@ -61,25 +59,25 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
           pointsForMoneySpent: data.pointsForMoneySpent,
           expirationInDays: data.expirationInDays,
         },
-      });
+      })
 
       if (error) {
         toast.error("Erro ao salvar", {
           description: error.message || "Erro desconhecido ao atualizar as configurações.",
-        });
-        return;
+        })
+        return
       }
 
       toast.success("Configurações atualizadas", {
         description: "As configurações foram salvas com sucesso.",
-      });
+      })
     } catch (err: unknown) {
-      console.error(err);
+      console.error(err)
       toast.error("Erro inesperado", {
         description: "Ocorreu um erro ao salvar as configurações.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -114,9 +112,7 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Número de dias até os pontos expirarem
-                  </FormDescription>
+                  <FormDescription>Número de dias até os pontos expirarem</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -128,12 +124,12 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
               render={({ field }) => {
                 const handleChange = useCallback(
                   (e: React.ChangeEvent<HTMLInputElement>) => {
-                    const rawValue = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
-                    const numericValue = Number(rawValue) / 100;
-                    field.onChange(numericValue);
+                    const rawValue = e.target.value.replace(/\D/g, "") // Remove tudo que não é número
+                    const numericValue = Number(rawValue) / 100
+                    field.onChange(numericValue)
                   },
-                  [field]
-                );
+                  [field],
+                )
 
                 return (
                   <FormItem>
@@ -150,7 +146,7 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
-                );
+                )
               }}
             />
             <div className="flex justify-end">
@@ -162,5 +158,5 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
         </Form>
       </CardContent>
     </Card>
-  );
+  )
 }

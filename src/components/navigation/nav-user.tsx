@@ -1,14 +1,6 @@
-import {
-  ChevronsUpDown,
-  LogOut,
-  Settings2Icon
-} from "lucide-react"
+import { ChevronsUpDown, LogOut, Settings2Icon } from "lucide-react"
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,11 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { useLogto } from "@logto/react"
 
 export function NavUser({
@@ -34,7 +22,7 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { signOut } = useLogto();
+  const { signOut } = useLogto()
 
   return (
     <SidebarMenu>
@@ -80,7 +68,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut('/')}>
+            <DropdownMenuItem onClick={() => signOut("/")}>
               <LogOut />
               Sair
             </DropdownMenuItem>

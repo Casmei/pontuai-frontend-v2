@@ -41,7 +41,10 @@ export async function RecentTransactions({ storeId, limit = 5 }: RecentTransacti
                 <p className="font-medium">{transaction.customer.name}</p>
                 <div className="flex items-center gap-2">
                   {transaction.type === "purchase" ? (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-50 text-green-700 border-green-200"
+                    >
                       Compra
                     </Badge>
                   ) : (
@@ -49,14 +52,18 @@ export async function RecentTransactions({ storeId, limit = 5 }: RecentTransacti
                       Resgate
                     </Badge>
                   )}
-                  <span className="text-xs text-muted-foreground">{formatDate(transaction.createdAt)}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDate(transaction.createdAt)}
+                  </span>
                 </div>
               </div>
               <div className="text-right">
                 {transaction.type === "purchase" ? (
                   <>
                     <p className="text-green-600">+{transaction.pointsEarned} pts</p>
-                    <p className="text-xs text-muted-foreground">{formatCurrency(transaction.amount!)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatCurrency(transaction.amount!)}
+                    </p>
                   </>
                 ) : (
                   <>

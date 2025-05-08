@@ -1,34 +1,31 @@
-"use client";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
+import { ChangeEvent, useEffect, useState } from "react";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+export function QuerySearch({ placeholder, callBack }: { placeholder?: string, callBack: (q: string) => void }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-export function QuerySearch({ placeholder }: { placeholder?: string }) {
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const { replace } = useRouter();
+  const handleChange = (e: ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(e.target.value);
+  };
 
-    const handleSearch = (searchTerm: string) => {
-        const params = new URLSearchParams(searchParams);
-        if (searchTerm) {
-            params.set("q", searchTerm)
-        } else {
-            params.delete("q")
-        }
+  useEffect(() => {
+    callBack(debouncedSearchTerm)
 
-        replace(`${pathname}?${params.toString()}`)
-    }
+  }, [debouncedSearchTerm]);
 
-    return (
-        <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-                defaultValue={searchParams.get("q")?.toString()}
-                placeholder={placeholder}
-                className="pl-8"
-                onChange={(e) => handleSearch(e.target.value)}
-            />
-        </div>
-    );
+
+  return (
+    <div className="relative flex-1">
+      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <Input
+        placeholder={placeholder}
+        className="pl-8"
+        onChange={(e) => { handleChange(e) }}
+      />
+    </div>
+  )
 }

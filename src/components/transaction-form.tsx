@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -11,54 +11,50 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CreateRewardResponse, CustomerWithPointsResponse } from "@/gen";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
-import { createTransactionAction } from "@/action/create-transaction";
-import { redeemRewardAction } from "@/action/redeem-reward";
-import { formatCurrency } from "@/lib/utils";
+} from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { CreateRewardResponse, CustomerWithPointsResponse } from "@/gen"
+import { useCallback, useState } from "react"
+import { toast } from "sonner"
+import { createTransactionAction } from "@/action/create-transaction"
+import { redeemRewardAction } from "@/action/redeem-reward"
+import { formatCurrency } from "@/lib/utils"
 
 const purchaseSchema = z.object({
   type: z.literal("purchase"),
   customerId: z.string().min(1, "Selecione um cliente"),
   amount: z.coerce.number().min(0.01, "Valor deve ser maior que zero"),
-});
+})
 
 const redeemSchema = z.object({
   type: z.literal("redeem"),
   customerId: z.string().min(1, "Selecione um cliente"),
   rewardId: z.string().min(1, "Selecione uma recompensa"),
-});
+})
 
-const formSchema = z.discriminatedUnion("type", [purchaseSchema, redeemSchema]);
+const formSchema = z.discriminatedUnion("type", [purchaseSchema, redeemSchema])
 
 interface TransactionFormProps {
-  customers: CustomerWithPointsResponse[] | null;
-  rewards: CreateRewardResponse[] | null;
-  storeId: string;
+  customers: CustomerWithPointsResponse[] | null
+  rewards: CreateRewardResponse[] | null
+  storeId: string
 }
 
-export function TransactionForm({
-  storeId,
-  customers,
-  rewards,
-}: TransactionFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export function TransactionForm({ storeId, customers, rewards }: TransactionFormProps) {
+  const [isLoading, setIsLoading] = useState(false)
 
   const brlFormatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  });
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,13 +63,13 @@ export function TransactionForm({
       customerId: "",
       amount: 0,
     },
-  });
+  })
 
-  const transactionType = form.watch("type");
+  const transactionType = form.watch("type")
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
 
       if (values.type === "purchase") {
         const [error] = await createTransactionAction({
@@ -82,47 +78,46 @@ export function TransactionForm({
             customerId: values.customerId,
             moneySpent: values.amount,
           },
-        });
+        })
 
         if (error) {
           toast.error("Erro ao registrar transação", {
             description: error.message,
-          });
-          return;
+          })
+          return
         }
-
       } else {
         await redeemRewardAction({
           id: values.rewardId,
           xTenantId: storeId,
           redeemRewardDto: { customerId: values.customerId },
-        });
+        })
       }
 
       toast.success("Transação registrada", {
         description: "A transação foi registrada com sucesso.",
-      });
+      })
 
       form.reset(
         values.type === "purchase"
           ? {
-            type: "purchase",
-            customerId: "",
-            amount: 0,
-          }
+              type: "purchase",
+              customerId: "",
+              amount: 0,
+            }
           : {
-            type: "redeem",
-            customerId: "",
-            rewardId: "",
-          }
-      );
+              type: "redeem",
+              customerId: "",
+              rewardId: "",
+            },
+      )
     } catch (error) {
-      console.error(error);
+      console.error(error)
       toast.error("Erro inesperado", {
         description: "Ocorreu um erro ao registrar a transação.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
   return (
@@ -195,21 +190,25 @@ export function TransactionForm({
             render={({ field }) => {
               const handleChange = useCallback(
                 (e: React.ChangeEvent<HTMLInputElement>) => {
-                  const rawValue = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
-                  const numericValue = Number(rawValue) / 100;
-                  field.onChange(numericValue);
+                  const rawValue = e.target.value.replace(/\D/g, "") // Remove tudo que não é número
+                  const numericValue = Number(rawValue) / 100
+                  field.onChange(numericValue)
                 },
-                [field]
-              );
-              return (<FormItem >
-                <FormLabel>Valor da Compra (R$)</FormLabel>
-                <FormControl>
-                  <Input type="text"
-                    value={formatCurrency(Number(field.value || 0))}
-                    onChange={handleChange} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>)
+                [field],
+              )
+              return (
+                <FormItem>
+                  <FormLabel>Valor da Compra (R$)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      value={formatCurrency(Number(field.value || 0))}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )
             }}
           />
         )}
@@ -248,5 +247,5 @@ export function TransactionForm({
         </div>
       </form>
     </Form>
-  );
+  )
 }

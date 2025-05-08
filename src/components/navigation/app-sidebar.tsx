@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BarChart3,
-  Gift,
-  Receipt,
-  Settings,
-  Users,
-  House,
-} from "lucide-react"
+import { BarChart3, Gift, Receipt, Settings, Users, House } from "lucide-react"
 import * as React from "react"
 
 import { NavCommon } from "@/components/navigation/nav-common"
@@ -50,7 +43,7 @@ const fakeData = {
       title: "Transações",
       icon: Receipt,
     },
-  ]
+  ],
 }
 
 type Props = React.ComponentProps<typeof Sidebar> & {
@@ -58,7 +51,6 @@ type Props = React.ComponentProps<typeof Sidebar> & {
 }
 
 export function AppSidebar({ data = fakeData, ...props }: Props) {
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -82,11 +74,13 @@ export function AppSidebar({ data = fakeData, ...props }: Props) {
         <NavCommon title="Loja" items={data.Loja} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={{
-          name: "Teste",
-          email: "Teste",
-          avatar: "Teste",
-        }} />
+        <NavUser
+          user={{
+            name: "Teste",
+            email: "Teste",
+            avatar: "Teste",
+          }}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

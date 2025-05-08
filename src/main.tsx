@@ -30,12 +30,14 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <LogtoProvider config={{
-        endpoint: 'https://0zyxhw.logto.app/',
-        appId: 'osxcdqwhvkx7n7l9s1ie6',
-        resources: ["https://pontuai-api.kontact.com.br"],
-        scopes: ["openid", "profile", "email", "offline_access"],
-      }}>
+      <LogtoProvider
+        config={{
+          endpoint: "https://0zyxhw.logto.app/",
+          appId: "osxcdqwhvkx7n7l9s1ie6",
+          resources: ["https://pontuai-api.kontact.com.br"],
+          scopes: ["openid", "profile", "email", "offline_access"],
+        }}
+      >
         <QueryClientProvider client={queryClient}>
           <InnerApp />
         </QueryClientProvider>

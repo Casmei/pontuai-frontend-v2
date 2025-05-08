@@ -16,7 +16,9 @@ export function StoreList() {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
         <h2 className="text-lg font-semibold">Nenhum estabelecimento encontrado</h2>
-        <p className="text-sm text-muted-foreground mt-2">Crie seu primeiro estabelecimento para começar.</p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Crie seu primeiro estabelecimento para começar.
+        </p>
       </div>
     )
   }

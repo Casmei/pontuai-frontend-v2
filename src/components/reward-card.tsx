@@ -18,7 +18,9 @@ export function RewardCard({ reward }: RewardCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{reward.description || "Sem descrição disponível."}</p>
+        <p className="text-sm text-muted-foreground">
+          {reward.description || "Sem descrição disponível."}
+        </p>
       </CardContent>
       {/* <CardFooter className="flex justify-between">
         <Button variant="outline" size="sm">

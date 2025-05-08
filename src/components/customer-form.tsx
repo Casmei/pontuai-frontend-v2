@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useCallback, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { useCallback, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -12,21 +12,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { createCustomerAction } from "@/action/create-customer";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { createCustomerAction } from "@/action/create-customer"
 import {
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Label } from "./ui/label";
-import { formatCurrency } from "@/lib/utils";
-import { PhoneInput } from "./ui/phone-input";
-import { DialogClose } from "@radix-ui/react-dialog";
+} from "./ui/dialog"
+import { Label } from "./ui/label"
+import { formatCurrency } from "@/lib/utils"
+import { PhoneInput } from "./ui/phone-input"
+import { DialogClose } from "@radix-ui/react-dialog"
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -34,14 +34,14 @@ const formSchema = z.object({
   moneySpent: z.number({
     invalid_type_error: "Valor gasto precisa ser um número",
   }),
-});
+})
 
 interface CustomerFormProps {
-  storeId: string;
+  storeId: string
 }
 
 export function CustomerForm({ storeId }: CustomerFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,11 +50,11 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
       phone: "",
       moneySpent: 0,
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       await createCustomerAction({
         xTenantId: storeId,
         createCustomerDto: {
@@ -62,23 +62,22 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
           phone: values.phone,
           moneySpent: values.moneySpent,
         },
-      });
+      })
       toast.success("Cliente adicionado", {
         description: "O cliente foi adicionado com sucesso.",
-      });
-      form.reset();
+      })
+      form.reset()
     } catch (error) {
-      console.error(error);
+      console.error(error)
       toast.error("Erro", {
         description: "Ocorreu um erro ao adicionar o cliente.",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   return (
-
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Novo Cliente</DialogTitle>
@@ -123,12 +122,12 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
               render={({ field }) => {
                 const handleChange = useCallback(
                   (e: React.ChangeEvent<HTMLInputElement>) => {
-                    const rawValue = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
-                    const numericValue = Number(rawValue) / 100;
-                    field.onChange(numericValue);
+                    const rawValue = e.target.value.replace(/\D/g, "") // Remove tudo que não é número
+                    const numericValue = Number(rawValue) / 100
+                    field.onChange(numericValue)
                   },
-                  [field]
-                );
+                  [field],
+                )
 
                 return (
                   <FormItem>
@@ -142,7 +141,7 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                );
+                )
               }}
             />
           </div>
@@ -156,5 +155,5 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
         </form>
       </Form>
     </DialogContent>
-  );
+  )
 }

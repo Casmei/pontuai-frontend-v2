@@ -1,40 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import {
-  Award,
-  Gift,
-  Sparkles,
-  Star,
-  TrendingUp,
-  Users
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { useLogto } from "@logto/react";
-
+import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { Award, Gift, Sparkles, Star, TrendingUp, Users } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useLogto } from "@logto/react"
 
 export const Route = createFileRoute("/_landing/")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [count, setCount] = useState(0);
-  const { signIn } = useLogto();
+  const [count, setCount] = useState(0)
+  const { signIn } = useLogto()
 
   // Animação de contagem para estatísticas
   useEffect(() => {
     const interval = setInterval(() => {
       if (count < 1250) {
-        setCount((prev) => prev + 25);
+        setCount((prev) => prev + 25)
       } else {
-        clearInterval(interval);
+        clearInterval(interval)
       }
-    }, 30);
+    }, 30)
 
-    return () => clearInterval(interval);
-  }, [count]);
+    return () => clearInterval(interval)
+  }, [count])
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-amber-50 overflow-hidden relative">
@@ -89,8 +80,8 @@ function RouteComponent() {
                 que geram resultados
               </h1>
               <p className="text-lg text-gray-600 max-w-md">
-                Transforme clientes ocasionais em defensores da sua marca com um
-                sistema de pontos intuitivo e eficaz para pequenas empresas.
+                Transforme clientes ocasionais em defensores da sua marca com um sistema de pontos
+                intuitivo e eficaz para pequenas empresas.
               </p>
             </div>
 
@@ -107,9 +98,7 @@ function RouteComponent() {
                   <div className="bg-amber-100 p-2 rounded-full mb-2">
                     <Users className="h-5 w-5 text-amber-600" />
                   </div>
-                  <p className="text-2xl font-bold">
-                    {count.toLocaleString()}+
-                  </p>
+                  <p className="text-2xl font-bold">{count.toLocaleString()}+</p>
                   <p className="text-xs text-gray-500">Clientes fidelizados</p>
                 </div>
               </motion.div>
@@ -168,9 +157,7 @@ function RouteComponent() {
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h3 className="font-bold">Café Aroma</h3>
-                      <p className="text-sm text-gray-500">
-                        Cliente: Maria Silva
-                      </p>
+                      <p className="text-sm text-gray-500">Cliente: Maria Silva</p>
                     </div>
                     <motion.div
                       animate={{
@@ -209,12 +196,8 @@ function RouteComponent() {
                       <div className="flex items-start gap-3">
                         <Award className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium">
-                            Próximo prêmio: 300 pontos
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Café especial + sobremesa grátis
-                          </p>
+                          <p className="text-sm font-medium">Próximo prêmio: 300 pontos</p>
+                          <p className="text-xs text-gray-500">Café especial + sobremesa grátis</p>
                         </div>
                       </div>
                     </motion.div>
@@ -245,9 +228,7 @@ function RouteComponent() {
                   transition={{ delay: 1, duration: 0.5 }}
                   whileHover={{ y: -5 }}
                 >
-                  <h4 className="text-sm font-medium mb-2">
-                    Histórico recente
-                  </h4>
+                  <h4 className="text-sm font-medium mb-2">Histórico recente</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
                       <span className="text-gray-500">Café Latte</span>
@@ -255,9 +236,7 @@ function RouteComponent() {
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-gray-500">Sanduíche</span>
-                      <span className="font-medium text-green-500">
-                        +10 pts
-                      </span>
+                      <span className="font-medium text-green-500">+10 pts</span>
                     </div>
                   </div>
                 </motion.div>
@@ -354,12 +333,8 @@ function RouteComponent() {
                   <div className="flex items-center gap-2">
                     <Award className="h-5 w-5 text-amber-500" />
                     <div>
-                      <p className="text-sm font-medium">
-                        Próximo prêmio: 300 pontos
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Café especial + sobremesa grátis
-                      </p>
+                      <p className="text-sm font-medium">Próximo prêmio: 300 pontos</p>
+                      <p className="text-xs text-gray-500">Café especial + sobremesa grátis</p>
                     </div>
                   </div>
                 </div>
@@ -375,10 +350,9 @@ function RouteComponent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          © {new Date().getFullYear()} Pontuaí - Byalsoft. Todos os direitos
-          reservados.
+          © {new Date().getFullYear()} Pontuaí - Byalsoft. Todos os direitos reservados.
         </motion.div>
       </footer>
     </div>
-  );
+  )
 }
