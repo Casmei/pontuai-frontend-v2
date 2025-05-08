@@ -1,5 +1,3 @@
-"use client"
-
 import { ChevronRight, type LucideIcon } from "lucide-react"
 
 import {
@@ -17,8 +15,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
-import { useParams, usePathname } from "next/navigation"
+import { Link, useParams } from "@tanstack/react-router"
 
 type Props = {
   title: string,
@@ -64,9 +61,8 @@ export function NavCommon({
   items,
   title,
 }: Props) {
-  const pathname = usePathname()
-  const params = useParams()
-  const { storeId } = params as { storeId: string }
+  const params = useParams({ from: "/stores/$storeId" })
+  const { storeId } = params
 
   return (
     <SidebarGroup>
@@ -76,7 +72,7 @@ export function NavCommon({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={pathname.startsWith(item.url) && item.url !== "/stores"}
+            // defaultOpen={pathname.startsWith(item.url) && item.url !== "/stores"}
             className="group/collapsible"
           >
             <SidebarMenuItem>
@@ -85,17 +81,21 @@ export function NavCommon({
               )}
 
               {!item.items?.length && (
-                <SidebarMenuButton asChild className={pathname.endsWith(item.url) ? `bg-primary/20` : ``}>
-                  <Link href={`/stores/${storeId}/${item.url}`}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
+                <Link to={item.url} params={{ storeId }}>
+                  {({ isActive }) => {
+
+                    return (<SidebarMenuButton isActive={isActive && item.url != '/stores/$storeId/'}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>)
+                  }}
+
+                </Link>
               )}
             </SidebarMenuItem>
           </Collapsible>
         ))}
       </SidebarMenu>
-    </SidebarGroup>
+    </SidebarGroup >
   )
 }

@@ -22,32 +22,31 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { useUser } from "../@providers/user-provider"
 
 const fakeData = {
   Loja: [
     {
-      url: `/`,
+      url: `/stores/$storeId/`,
       title: "Dashboard",
       icon: BarChart3,
     },
     {
-      url: `/config`,
+      url: `/stores/$storeId/config`,
       title: "Configurações",
       icon: Settings,
     },
     {
-      url: `/customers`,
+      url: `/stores/$storeId/customers`,
       title: "Clientes",
       icon: Users,
     },
     {
-      url: `/rewards`,
+      url: `/stores/$storeId/rewards`,
       title: "Recompensas",
       icon: Gift,
     },
     {
-      url: `/transactions`,
+      url: `/stores/$storeId/transactions`,
       title: "Transações",
       icon: Receipt,
     },
@@ -59,7 +58,6 @@ type Props = React.ComponentProps<typeof Sidebar> & {
 }
 
 export function AppSidebar({ data = fakeData, ...props }: Props) {
-  const user = useUser();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -85,9 +83,9 @@ export function AppSidebar({ data = fakeData, ...props }: Props) {
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{
-          name: user.name || "",
-          email: user.email || "",
-          avatar: user.picture || "",
+          name: "Teste",
+          email: "Teste",
+          avatar: "Teste",
         }} />
       </SidebarFooter>
       <SidebarRail />

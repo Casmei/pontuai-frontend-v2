@@ -4,7 +4,7 @@ import { StrictMode } from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
 import { routeTree } from "./routeTree.gen"
-import { LogtoProvider, useLogto, LogtoContext } from "@logto/react"
+import { LogtoProvider } from "@logto/react"
 
 const router = createRouter({
   routeTree,
@@ -22,22 +22,9 @@ declare module "@tanstack/react-router" {
 }
 
 function InnerApp() {
-  // const auth = useLogto()
-  // if (auth.isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center w-screen h-screen bg-white">
-  //       <div className="flex flex-col items-center space-y-4">
-  //         <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-800 rounded-full animate-spin" />
-  //         <span className="text-lg font-semibold text-gray-700">Carregando...</span>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
   return <RouterProvider router={router} />
 }
 
-// Render the app
 const rootElement = document.getElementById("root")!
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)

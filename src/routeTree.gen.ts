@@ -11,25 +11,29 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as StoresImport } from './routes/stores'
 import { Route as CallbackImport } from './routes/callback'
+import { Route as StoresImport } from './routes/_stores'
 import { Route as LandingImport } from './routes/_landing'
 import { Route as StoresIndexImport } from './routes/stores/index'
 import { Route as LandingIndexImport } from './routes/_landing/index'
 import { Route as StoresCreateImport } from './routes/stores/create'
 import { Route as StoresStoreIdImport } from './routes/stores/$storeId'
+import { Route as StoresStoreIdIndexImport } from './routes/stores/$storeId/index'
+import { Route as StoresStoreIdTransactionsIndexImport } from './routes/stores/$storeId/transactions/index'
+import { Route as StoresStoreIdSettingsIndexImport } from './routes/stores/$storeId/settings/index'
+import { Route as StoresStoreIdRewardsIndexImport } from './routes/stores/$storeId/rewards/index'
+import { Route as StoresStoreIdCustomersIndexImport } from './routes/stores/$storeId/customers/index'
 
 // Create/Update Routes
-
-const StoresRoute = StoresImport.update({
-  id: '/stores',
-  path: '/stores',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const CallbackRoute = CallbackImport.update({
   id: '/callback',
   path: '/callback',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StoresRoute = StoresImport.update({
+  id: '/_stores',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,9 +43,9 @@ const LandingRoute = LandingImport.update({
 } as any)
 
 const StoresIndexRoute = StoresIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => StoresRoute,
+  id: '/stores/',
+  path: '/stores/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const LandingIndexRoute = LandingIndexImport.update({
@@ -51,16 +55,50 @@ const LandingIndexRoute = LandingIndexImport.update({
 } as any)
 
 const StoresCreateRoute = StoresCreateImport.update({
-  id: '/create',
-  path: '/create',
-  getParentRoute: () => StoresRoute,
+  id: '/stores/create',
+  path: '/stores/create',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const StoresStoreIdRoute = StoresStoreIdImport.update({
-  id: '/$storeId',
-  path: '/$storeId',
-  getParentRoute: () => StoresRoute,
+  id: '/stores/$storeId',
+  path: '/stores/$storeId',
+  getParentRoute: () => rootRoute,
 } as any)
+
+const StoresStoreIdIndexRoute = StoresStoreIdIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StoresStoreIdRoute,
+} as any)
+
+const StoresStoreIdTransactionsIndexRoute =
+  StoresStoreIdTransactionsIndexImport.update({
+    id: '/transactions/',
+    path: '/transactions/',
+    getParentRoute: () => StoresStoreIdRoute,
+  } as any)
+
+const StoresStoreIdSettingsIndexRoute = StoresStoreIdSettingsIndexImport.update(
+  {
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => StoresStoreIdRoute,
+  } as any,
+)
+
+const StoresStoreIdRewardsIndexRoute = StoresStoreIdRewardsIndexImport.update({
+  id: '/rewards/',
+  path: '/rewards/',
+  getParentRoute: () => StoresStoreIdRoute,
+} as any)
+
+const StoresStoreIdCustomersIndexRoute =
+  StoresStoreIdCustomersIndexImport.update({
+    id: '/customers/',
+    path: '/customers/',
+    getParentRoute: () => StoresStoreIdRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -73,6 +111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingImport
       parentRoute: typeof rootRoute
     }
+    '/_stores': {
+      id: '/_stores'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof StoresImport
+      parentRoute: typeof rootRoute
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -80,26 +125,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CallbackImport
       parentRoute: typeof rootRoute
     }
-    '/stores': {
-      id: '/stores'
-      path: '/stores'
-      fullPath: '/stores'
-      preLoaderRoute: typeof StoresImport
-      parentRoute: typeof rootRoute
-    }
     '/stores/$storeId': {
       id: '/stores/$storeId'
-      path: '/$storeId'
+      path: '/stores/$storeId'
       fullPath: '/stores/$storeId'
       preLoaderRoute: typeof StoresStoreIdImport
-      parentRoute: typeof StoresImport
+      parentRoute: typeof rootRoute
     }
     '/stores/create': {
       id: '/stores/create'
-      path: '/create'
+      path: '/stores/create'
       fullPath: '/stores/create'
       preLoaderRoute: typeof StoresCreateImport
-      parentRoute: typeof StoresImport
+      parentRoute: typeof rootRoute
     }
     '/_landing/': {
       id: '/_landing/'
@@ -110,10 +148,45 @@ declare module '@tanstack/react-router' {
     }
     '/stores/': {
       id: '/stores/'
-      path: '/'
-      fullPath: '/stores/'
+      path: '/stores'
+      fullPath: '/stores'
       preLoaderRoute: typeof StoresIndexImport
-      parentRoute: typeof StoresImport
+      parentRoute: typeof rootRoute
+    }
+    '/stores/$storeId/': {
+      id: '/stores/$storeId/'
+      path: '/'
+      fullPath: '/stores/$storeId/'
+      preLoaderRoute: typeof StoresStoreIdIndexImport
+      parentRoute: typeof StoresStoreIdImport
+    }
+    '/stores/$storeId/customers/': {
+      id: '/stores/$storeId/customers/'
+      path: '/customers'
+      fullPath: '/stores/$storeId/customers'
+      preLoaderRoute: typeof StoresStoreIdCustomersIndexImport
+      parentRoute: typeof StoresStoreIdImport
+    }
+    '/stores/$storeId/rewards/': {
+      id: '/stores/$storeId/rewards/'
+      path: '/rewards'
+      fullPath: '/stores/$storeId/rewards'
+      preLoaderRoute: typeof StoresStoreIdRewardsIndexImport
+      parentRoute: typeof StoresStoreIdImport
+    }
+    '/stores/$storeId/settings/': {
+      id: '/stores/$storeId/settings/'
+      path: '/settings'
+      fullPath: '/stores/$storeId/settings'
+      preLoaderRoute: typeof StoresStoreIdSettingsIndexImport
+      parentRoute: typeof StoresStoreIdImport
+    }
+    '/stores/$storeId/transactions/': {
+      id: '/stores/$storeId/transactions/'
+      path: '/transactions'
+      fullPath: '/stores/$storeId/transactions'
+      preLoaderRoute: typeof StoresStoreIdTransactionsIndexImport
+      parentRoute: typeof StoresStoreIdImport
     }
   }
 }
@@ -131,48 +204,67 @@ const LandingRouteChildren: LandingRouteChildren = {
 const LandingRouteWithChildren =
   LandingRoute._addFileChildren(LandingRouteChildren)
 
-interface StoresRouteChildren {
-  StoresStoreIdRoute: typeof StoresStoreIdRoute
-  StoresCreateRoute: typeof StoresCreateRoute
-  StoresIndexRoute: typeof StoresIndexRoute
+interface StoresStoreIdRouteChildren {
+  StoresStoreIdIndexRoute: typeof StoresStoreIdIndexRoute
+  StoresStoreIdCustomersIndexRoute: typeof StoresStoreIdCustomersIndexRoute
+  StoresStoreIdRewardsIndexRoute: typeof StoresStoreIdRewardsIndexRoute
+  StoresStoreIdSettingsIndexRoute: typeof StoresStoreIdSettingsIndexRoute
+  StoresStoreIdTransactionsIndexRoute: typeof StoresStoreIdTransactionsIndexRoute
 }
 
-const StoresRouteChildren: StoresRouteChildren = {
-  StoresStoreIdRoute: StoresStoreIdRoute,
-  StoresCreateRoute: StoresCreateRoute,
-  StoresIndexRoute: StoresIndexRoute,
+const StoresStoreIdRouteChildren: StoresStoreIdRouteChildren = {
+  StoresStoreIdIndexRoute: StoresStoreIdIndexRoute,
+  StoresStoreIdCustomersIndexRoute: StoresStoreIdCustomersIndexRoute,
+  StoresStoreIdRewardsIndexRoute: StoresStoreIdRewardsIndexRoute,
+  StoresStoreIdSettingsIndexRoute: StoresStoreIdSettingsIndexRoute,
+  StoresStoreIdTransactionsIndexRoute: StoresStoreIdTransactionsIndexRoute,
 }
 
-const StoresRouteWithChildren =
-  StoresRoute._addFileChildren(StoresRouteChildren)
+const StoresStoreIdRouteWithChildren = StoresStoreIdRoute._addFileChildren(
+  StoresStoreIdRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
-  '': typeof LandingRouteWithChildren
+  '': typeof StoresRoute
   '/callback': typeof CallbackRoute
-  '/stores': typeof StoresRouteWithChildren
-  '/stores/$storeId': typeof StoresStoreIdRoute
-  '/stores/create': typeof StoresCreateRoute
-  '/': typeof LandingIndexRoute
-  '/stores/': typeof StoresIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/callback': typeof CallbackRoute
-  '/stores/$storeId': typeof StoresStoreIdRoute
+  '/stores/$storeId': typeof StoresStoreIdRouteWithChildren
   '/stores/create': typeof StoresCreateRoute
   '/': typeof LandingIndexRoute
   '/stores': typeof StoresIndexRoute
+  '/stores/$storeId/': typeof StoresStoreIdIndexRoute
+  '/stores/$storeId/customers': typeof StoresStoreIdCustomersIndexRoute
+  '/stores/$storeId/rewards': typeof StoresStoreIdRewardsIndexRoute
+  '/stores/$storeId/settings': typeof StoresStoreIdSettingsIndexRoute
+  '/stores/$storeId/transactions': typeof StoresStoreIdTransactionsIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '': typeof StoresRoute
+  '/callback': typeof CallbackRoute
+  '/stores/create': typeof StoresCreateRoute
+  '/': typeof LandingIndexRoute
+  '/stores': typeof StoresIndexRoute
+  '/stores/$storeId': typeof StoresStoreIdIndexRoute
+  '/stores/$storeId/customers': typeof StoresStoreIdCustomersIndexRoute
+  '/stores/$storeId/rewards': typeof StoresStoreIdRewardsIndexRoute
+  '/stores/$storeId/settings': typeof StoresStoreIdSettingsIndexRoute
+  '/stores/$storeId/transactions': typeof StoresStoreIdTransactionsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_landing': typeof LandingRouteWithChildren
+  '/_stores': typeof StoresRoute
   '/callback': typeof CallbackRoute
-  '/stores': typeof StoresRouteWithChildren
-  '/stores/$storeId': typeof StoresStoreIdRoute
+  '/stores/$storeId': typeof StoresStoreIdRouteWithChildren
   '/stores/create': typeof StoresCreateRoute
   '/_landing/': typeof LandingIndexRoute
   '/stores/': typeof StoresIndexRoute
+  '/stores/$storeId/': typeof StoresStoreIdIndexRoute
+  '/stores/$storeId/customers/': typeof StoresStoreIdCustomersIndexRoute
+  '/stores/$storeId/rewards/': typeof StoresStoreIdRewardsIndexRoute
+  '/stores/$storeId/settings/': typeof StoresStoreIdSettingsIndexRoute
+  '/stores/$storeId/transactions/': typeof StoresStoreIdTransactionsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -180,35 +272,60 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/callback'
-    | '/stores'
     | '/stores/$storeId'
     | '/stores/create'
     | '/'
-    | '/stores/'
+    | '/stores'
+    | '/stores/$storeId/'
+    | '/stores/$storeId/customers'
+    | '/stores/$storeId/rewards'
+    | '/stores/$storeId/settings'
+    | '/stores/$storeId/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/callback' | '/stores/$storeId' | '/stores/create' | '/' | '/stores'
+  to:
+    | ''
+    | '/callback'
+    | '/stores/create'
+    | '/'
+    | '/stores'
+    | '/stores/$storeId'
+    | '/stores/$storeId/customers'
+    | '/stores/$storeId/rewards'
+    | '/stores/$storeId/settings'
+    | '/stores/$storeId/transactions'
   id:
     | '__root__'
     | '/_landing'
+    | '/_stores'
     | '/callback'
-    | '/stores'
     | '/stores/$storeId'
     | '/stores/create'
     | '/_landing/'
     | '/stores/'
+    | '/stores/$storeId/'
+    | '/stores/$storeId/customers/'
+    | '/stores/$storeId/rewards/'
+    | '/stores/$storeId/settings/'
+    | '/stores/$storeId/transactions/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   LandingRoute: typeof LandingRouteWithChildren
+  StoresRoute: typeof StoresRoute
   CallbackRoute: typeof CallbackRoute
-  StoresRoute: typeof StoresRouteWithChildren
+  StoresStoreIdRoute: typeof StoresStoreIdRouteWithChildren
+  StoresCreateRoute: typeof StoresCreateRoute
+  StoresIndexRoute: typeof StoresIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LandingRoute: LandingRouteWithChildren,
+  StoresRoute: StoresRoute,
   CallbackRoute: CallbackRoute,
-  StoresRoute: StoresRouteWithChildren,
+  StoresStoreIdRoute: StoresStoreIdRouteWithChildren,
+  StoresCreateRoute: StoresCreateRoute,
+  StoresIndexRoute: StoresIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -222,8 +339,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_landing",
+        "/_stores",
         "/callback",
-        "/stores"
+        "/stores/$storeId",
+        "/stores/create",
+        "/stores/"
       ]
     },
     "/_landing": {
@@ -232,32 +352,51 @@ export const routeTree = rootRoute
         "/_landing/"
       ]
     },
+    "/_stores": {
+      "filePath": "_stores.tsx"
+    },
     "/callback": {
       "filePath": "callback.tsx"
     },
-    "/stores": {
-      "filePath": "stores.tsx",
-      "children": [
-        "/stores/$storeId",
-        "/stores/create",
-        "/stores/"
-      ]
-    },
     "/stores/$storeId": {
       "filePath": "stores/$storeId.tsx",
-      "parent": "/stores"
+      "children": [
+        "/stores/$storeId/",
+        "/stores/$storeId/customers/",
+        "/stores/$storeId/rewards/",
+        "/stores/$storeId/settings/",
+        "/stores/$storeId/transactions/"
+      ]
     },
     "/stores/create": {
-      "filePath": "stores/create.tsx",
-      "parent": "/stores"
+      "filePath": "stores/create.tsx"
     },
     "/_landing/": {
       "filePath": "_landing/index.tsx",
       "parent": "/_landing"
     },
     "/stores/": {
-      "filePath": "stores/index.tsx",
-      "parent": "/stores"
+      "filePath": "stores/index.tsx"
+    },
+    "/stores/$storeId/": {
+      "filePath": "stores/$storeId/index.tsx",
+      "parent": "/stores/$storeId"
+    },
+    "/stores/$storeId/customers/": {
+      "filePath": "stores/$storeId/customers/index.tsx",
+      "parent": "/stores/$storeId"
+    },
+    "/stores/$storeId/rewards/": {
+      "filePath": "stores/$storeId/rewards/index.tsx",
+      "parent": "/stores/$storeId"
+    },
+    "/stores/$storeId/settings/": {
+      "filePath": "stores/$storeId/settings/index.tsx",
+      "parent": "/stores/$storeId"
+    },
+    "/stores/$storeId/transactions/": {
+      "filePath": "stores/$storeId/transactions/index.tsx",
+      "parent": "/stores/$storeId"
     }
   }
 }

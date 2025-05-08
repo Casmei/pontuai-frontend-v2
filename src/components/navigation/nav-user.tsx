@@ -23,8 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar"
-import Link from "next/link"
-import { logout } from "@/components/auth/logout-action"
+import { useLogto } from "@logto/react"
 
 export function NavUser({
   user,
@@ -35,6 +34,7 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const { signOut } = useLogto();
 
   return (
     <SidebarMenu>
@@ -80,16 +80,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <Link href="/dashboard/configuracoes/perfil">
-                <DropdownMenuItem>
-                  <Settings2Icon />
-                  Preferências
-                </DropdownMenuItem>
-              </Link>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={() => signOut('/')}>
               <LogOut />
               Sair
             </DropdownMenuItem>
