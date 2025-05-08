@@ -1,5 +1,3 @@
-"use client"
-
 import { useCallback, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,7 +13,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { createCustomerAction } from "@/action/create-customer"
 import {
   DialogContent,
   DialogDescription,
@@ -23,10 +20,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog"
-import { Label } from "./ui/label"
 import { formatCurrency } from "@/lib/utils"
-import { PhoneInput } from "./ui/phone-input"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { PhoneInput } from "./ui/phone-input"
+import { useCreateCustomer } from "@/lib/services/customer-service"
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -42,6 +39,7 @@ interface CustomerFormProps {
 
 export function CustomerForm({ storeId }: CustomerFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { mutateAsync: createCustomer } = useCreateCustomer()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +53,7 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true)
-      await createCustomerAction({
+      await createCustomer({
         xTenantId: storeId,
         createCustomerDto: {
           name: values.name,
@@ -63,6 +61,7 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
           moneySpent: values.moneySpent,
         },
       })
+
       toast.success("Cliente adicionado", {
         description: "O cliente foi adicionado com sucesso.",
       })

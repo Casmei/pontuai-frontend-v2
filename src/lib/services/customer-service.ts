@@ -1,6 +1,6 @@
-import { Configuration, CustomerApi, CustomerControllerGetAllRequest } from "@/gen"
+import { Configuration, CustomerApi, CustomerControllerCreateRequest, CustomerControllerGetAllRequest } from "@/gen"
 import { useLogto } from "@logto/react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -41,3 +41,22 @@ export function useGetCustomers({ xTenantId, query }: CustomerControllerGetAllRe
     },
   })
 }
+
+export function useCreateCustomer() {
+  const { getClient } = useCustomerService();
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: CustomerControllerCreateRequest) => {
+      const client = await getClient();
+      return client.customerControllerCreate(data);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['customer'] });
+    },
+    onError: (error) => {
+      console.error('Falha ao criar cliente:', error);
+    },
+  });
+}
+

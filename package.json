@@ -48,6 +48,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.1",
     "react-pdf": "^9.2.1",
+    "react-phone-number-input": "^3.4.12",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "tailwindcss": "^4.1.4",

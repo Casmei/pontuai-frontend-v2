@@ -1,11 +1,10 @@
+import { CustomerForm } from "@/components/customer-form";
 import { CustomerTable } from "@/components/customer-table";
-import { CustomerTableSkeleton } from "@/components/customer-table-skeleton";
 import { QuerySearch } from "@/components/query-search";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { Suspense } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/stores/$storeId/customers/")({
@@ -37,7 +36,7 @@ function RouteComponent() {
                                     Adicionar Cliente
                                 </Button>
                             </DialogTrigger>
-                            {/* <CustomerForm storeId={storeId} /> */}
+                            <CustomerForm storeId={storeId} />
                         </Dialog>
                     </div>
                     <CustomerTable storeId={storeId} query={q || ""} />
