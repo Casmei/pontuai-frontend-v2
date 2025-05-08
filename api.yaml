@@ -1,0 +1,775 @@
+openapi: 3.0.0
+paths:
+  /customers:
+    post:
+      operationId: CustomerController_create
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerDto'
+      responses:
+        '201':
+          description: The customer has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCustomerResponse'
+      summary: Create a new customer
+      tags:
+        - Customer
+    get:
+      operationId: CustomerController_getAll
+      parameters:
+        - name: query
+          required: false
+          in: query
+          description: Optional search query
+          schema:
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The customer has been successfully loaded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerWithPointsResponse'
+      summary: Get customers
+      tags:
+        - Customer
+  /transaction:
+    post:
+      operationId: TransactionController_create
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddPointsDto'
+      responses:
+        '201':
+          description: The reward has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddPointsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Create a new transaction
+      tags:
+        - Transaction
+    get:
+      operationId: TransactionController_getAll
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Find all invoices
+      tags:
+        - Transaction
+  /tenant:
+    post:
+      operationId: TenantController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantDto'
+      responses:
+        '201':
+          description: The tenant has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTenantResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Create a new tenant
+      tags:
+        - Tenant
+    get:
+      operationId: TenantController_getMyTenants
+      parameters: []
+      responses:
+        '200':
+          description: List of tenants belonging to the authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetTenant'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Get my tenants
+      tags:
+        - Tenant
+  /tenant/{tenant_id}/settings:
+    patch:
+      operationId: TenantController_updateConfig
+      parameters:
+        - name: tenant_id
+          required: true
+          in: path
+          description: The unique id identifier of the tenant
+          schema:
+            example: my-tenant
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantSettingsDto'
+      responses:
+        '204':
+          description: Updates the tenant's points settings
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Update tenant settings
+      tags:
+        - Tenant
+  /reward:
+    post:
+      operationId: RewardController_create
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRewardDto'
+      responses:
+        '201':
+          description: The reward has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRewardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Create a new reward
+      tags:
+        - Reward
+    get:
+      operationId: RewardController_all
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateRewardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Get all rewards
+      tags:
+        - Reward
+  /reward/{id}:
+    patch:
+      operationId: RewardController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRewardDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Update a reward
+      tags:
+        - Reward
+  /reward/{id}/redeem:
+    patch:
+      operationId: RewardController_redeem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedeemRewardDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Redeem a reward
+      tags:
+        - Reward
+info:
+  title: Pontuaí
+  description: The Pontuaí API experience :)
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    CreateCustomerDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Customer name
+          example: John Doe
+        phone:
+          type: string
+          description: Customer phone
+          example: '+5533999166432'
+        moneySpent:
+          type: number
+          description: Customer Money Spent
+          example: null
+          nullable: true
+      required:
+        - name
+        - phone
+    CreateCustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the customer
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+        name:
+          type: string
+          description: The name of the customer
+          example: Tiago de Castro
+        phone:
+          type: string
+          description: The phone of the reward
+          example: '+5533999166432'
+        tenant_id:
+          type: string
+          description: 'Id to identify which tenant the customer belongs to '
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+      required:
+        - id
+        - name
+        - phone
+        - tenant_id
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the customer
+          example: bb66747b-cbc0-42fe-94d1-48436b275356
+        tenant_id:
+          type: string
+          description: Id to identify which tenant the customer belongs to
+          example: 07275dd6-940c-424a-b37e-bf2c38a1036c
+        name:
+          type: string
+          description: The name of the customer
+          example: Tiago de Castro
+        phone:
+          type: string
+          description: The phone number of the customer
+          example: '+5533999166432'
+      required:
+        - id
+        - tenant_id
+        - name
+        - phone
+    CustomerWithPointsResponse:
+      type: object
+      properties:
+        customer:
+          description: Customer details
+          allOf:
+            - $ref: '#/components/schemas/CustomerResponse'
+        points:
+          type: number
+          description: Total points accumulated by the customer
+          example: 100
+      required:
+        - customer
+        - points
+    AddPointsDto:
+      type: object
+      properties:
+        moneySpent:
+          type: number
+          description: Money spent in the transaction
+          example: 100
+        customerId:
+          type: string
+          description: ID of the customer related to the transaction
+          example: 5e887ac4-7eed-2530-91be-10cc0a2c0ef2
+      required:
+        - moneySpent
+        - customerId
+    AddPointsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the point transaction
+          example: e19decf2-7a0e-4230-8b14-a9bbf49d13fc
+        type:
+          type: string
+          description: The type of the point transaction (e.g., input or output)
+          example: input
+          enum:
+            - output
+            - input
+        points:
+          type: number
+          description: Amount of points added or removed
+          example: 100
+        value:
+          type: number
+          description: Amount of value spent
+          example: 1536
+        customerId:
+          type: string
+          description: The customer identifier related to the point transaction
+          example: bb66747b-cbc0-42fe-94d1-48436b275356
+        rewardId:
+          type: object
+          description: >-
+            The reward identifier if the points are linked to a reward (null if
+            not applicable)
+          example: null
+          nullable: true
+        createdAt:
+          type: string
+          description: The date and time the transaction was created
+          example: '2025-04-13T23:29:15.221Z'
+        updatedAt:
+          type: string
+          description: The date and time the transaction was last updated
+          example: '2025-04-13T23:29:15.221Z'
+      required:
+        - id
+        - type
+        - points
+        - value
+        - customerId
+        - rewardId
+        - createdAt
+        - updatedAt
+    RewardResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the reward
+          example: 36e6eb8e-4178-4438-8dfa-2d723794bb93
+        name:
+          type: string
+          description: The name of the reward
+          example: Café Grátis
+        description:
+          type: string
+          description: The description of the reward
+          example: ''
+        point_value:
+          type: number
+          description: The point cost of the reward
+          example: 100
+      required:
+        - id
+        - name
+        - description
+        - point_value
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the transaction
+          example: 2d9c1d31-62a3-46ed-8b9f-84a3e97d4125
+        type:
+          type: string
+          description: The type of transaction (input or output)
+          example: input
+        points:
+          type: number
+          description: The number of points for the transaction
+          example: 100
+        value:
+          type: object
+          description: The monetary value associated (if any)
+          example: 100
+          nullable: true
+        createdAt:
+          type: string
+          description: Date when the transaction was created
+          example: '2025-04-24T21:20:04.629Z'
+        updatedAt:
+          type: string
+          description: Date when the transaction was last updated
+          example: '2025-04-24T21:20:04.629Z'
+        customer:
+          description: The customer associated with the transaction
+          nullable: false
+          allOf:
+            - $ref: '#/components/schemas/CustomerResponse'
+        reward:
+          description: The reward associated with the transaction (only if type is output)
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/RewardResponse'
+      required:
+        - id
+        - type
+        - points
+        - value
+        - createdAt
+        - updatedAt
+        - customer
+        - reward
+    CreateTenantDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Tenant name
+          example: Sorvete amigo
+        cnpj:
+          type: string
+          description: Business CNPJ
+          example: 00.000.000/0001-00
+        slug:
+          type: string
+          description: 'Tenant slug '
+          example: sorvete-amigo
+      required:
+        - name
+        - cnpj
+        - slug
+    CreateTenantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the tenant
+          example: 07275dd6-940c-424a-b37e-bf2c38a1036c
+        name:
+          type: string
+          description: The name of the tenant
+          example: Sorvete amigo
+        CNPJ:
+          type: string
+          description: The CNPJ of the tenant
+          example: 62.518.633/0001-43
+        slug:
+          type: string
+          description: The business slug of the tenant
+          example: sorvete-amigo
+        active:
+          type: boolean
+          description: Indicates whether the tenant is active
+          example: true
+      required:
+        - id
+        - name
+        - CNPJ
+        - slug
+        - active
+    UpdateTenantSettingsDto:
+      type: object
+      properties:
+        pointsForMoneySpent:
+          type: number
+          description: Points for money spent
+          example: 1
+        expirationInDays:
+          type: number
+          description: Expiration points in days
+          example: 90
+        minimumValueForWinPoints:
+          type: number
+          description: Minimum value for win points
+          example: 100
+        baseUrl:
+          type: string
+          description: base url of evolution service
+          example: https://evolution.kontact.com.br
+          nullable: true
+        apikey:
+          type: string
+          description: Api key of evolution service
+          example: 4D91C370D2BB-43B5-9EB7-42B47955E505
+          nullable: true
+        instanceName:
+          type: string
+          description: Instance name of evolution service
+          example: sorvete-amigo
+          nullable: true
+      required:
+        - pointsForMoneySpent
+        - expirationInDays
+        - minimumValueForWinPoints
+    PointConfig:
+      type: object
+      properties:
+        pointsForMoneySpent:
+          type: number
+          description: Number of points earned for a unit of money spent
+          example: 1
+        expirationInDays:
+          type: number
+          description: The number of days before points expire
+          example: 90
+        minimumValueForWinPoints:
+          type: number
+          description: Minimum value for win points
+          example: 100
+      required:
+        - pointsForMoneySpent
+        - expirationInDays
+        - minimumValueForWinPoints
+    WhatsappConfig:
+      type: object
+      properties:
+        apikey:
+          type: string
+          description: The API key for the WhatsApp integration
+          example: 1D91CC70D2BB-43C5-9EB7-42C47955E505
+        baseUrl:
+          type: string
+          description: The base URL for the WhatsApp API service
+          example: https://example.com.br
+        instanceName:
+          type: string
+          description: The instance name used for the WhatsApp integration
+          example: sorveteria_amigo
+      required:
+        - apikey
+        - baseUrl
+        - instanceName
+    TenantConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the config
+          example: 2d2246c4-d40f-420c-b69c-24f073435b6c
+        tenant_id:
+          type: string
+          description: The tenant identifier this config belongs to
+          example: 07275dd6-940c-424a-b37e-bf2c38a1036c
+        point_config:
+          description: Configuration for the tenant's point system
+          allOf:
+            - $ref: '#/components/schemas/PointConfig'
+        whatsapp_config:
+          description: Configuration for the tenant's WhatsApp integration
+          allOf:
+            - $ref: '#/components/schemas/WhatsappConfig'
+      required:
+        - id
+        - tenant_id
+        - point_config
+        - whatsapp_config
+    GetTenant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the tenant
+          example: 07275dd6-940c-424a-b37e-bf2c38a1036c
+        name:
+          type: string
+          description: The name of the tenant
+          example: Sorvete amigo
+        CNPJ:
+          type: string
+          description: The CNPJ of the tenant
+          example: 62.518.633/0001-43
+        slug:
+          type: string
+          description: The business slug of the tenant
+          example: sorvete-amigo
+        active:
+          type: boolean
+          description: Indicates whether the tenant is active
+          example: true
+        config:
+          description: Configuration object for the tenant
+          allOf:
+            - $ref: '#/components/schemas/TenantConfig'
+      required:
+        - id
+        - name
+        - CNPJ
+        - slug
+        - active
+        - config
+    CreateRewardDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Reward name
+          example: 10% de desconto
+        description:
+          type: string
+          description: Reward description
+          example: Ganhe 10% de desconto na sua próxima compra
+        pointValue:
+          type: number
+          description: Points required for redemption
+          example: 100
+      required:
+        - name
+        - description
+        - pointValue
+    CreateRewardResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the reward
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+        name:
+          type: string
+          description: The name of the reward
+          example: 10% de desconto
+        description:
+          type: string
+          description: The description of the reward
+          example: 10% of discount in your next purchase
+        point_value:
+          type: number
+          description: The points needed to redeem the reward
+          example: 200
+        tenant_id:
+          type: string
+          description: 'Id to identify which tenant the reward belongs to '
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+      required:
+        - id
+        - name
+        - description
+        - point_value
+        - tenant_id
+    UpdateRewardDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Reward name
+          example: 10% de desconto
+        description:
+          type: string
+          description: Reward description
+          example: Ganhe 10% de desconto na sua próxima compra
+        pointValue:
+          type: number
+          description: Points required for redemption
+          example: 100
+      required:
+        - name
+        - description
+        - pointValue
+    RedeemRewardDto:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: Customer id
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+      required:
+        - customerId
+security:
+  - bearer: []
