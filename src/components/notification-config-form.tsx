@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { toast } from "sonner"
 import { TenantConfig } from "@/gen"
-import { updatePointConfigAction } from "@/action/update-point-config"
+import { useUpdateStoreConfig } from "@/lib/services/store-service"
 
 const formSchema = z.object({
   apikey: z.string().min(1, "API Key é obrigatória"),
@@ -39,6 +39,7 @@ interface NotificationConfigFormProps {
 
 export function NotificationConfigForm({ storeId, initialData }: NotificationConfigFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { mutateAsync: updateStoreConfig } = useUpdateStoreConfig()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,7 +54,7 @@ export function NotificationConfigForm({ storeId, initialData }: NotificationCon
     setIsLoading(true)
 
     try {
-      const [error] = await updatePointConfigAction({
+      await updateStoreConfig({
         tenantId: storeId,
         updateTenantSettingsDto: {
           expirationInDays: initialData.pointConfig.expirationInDays,
@@ -64,13 +65,6 @@ export function NotificationConfigForm({ storeId, initialData }: NotificationCon
           instanceName: data.instanceName,
         },
       })
-
-      if (error) {
-        toast.error("Erro ao salvar", {
-          description: error.message || "Erro desconhecido ao atualizar as configurações.",
-        })
-        return
-      }
 
       toast.success("Configurações atualizadas", {
         description: "As configurações foram salvas com sucesso.",

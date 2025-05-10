@@ -19,7 +19,6 @@ function RouteComponent() {
     const teste = (searchParam: string) => {
         navigate({ search: { q: searchParam } })
     }
-    console.log(q);
 
     return (
         <div className="space-y-8">

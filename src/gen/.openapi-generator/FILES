@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/CustomerApi.ts
 apis/RewardApi.ts
 apis/TenantApi.ts
@@ -15,6 +14,7 @@ models/CreateTenantDto.ts
 models/CreateTenantResponse.ts
 models/CustomerResponse.ts
 models/CustomerWithPointsResponse.ts
+models/GetCustomerDetailResponse.ts
 models/GetTenant.ts
 models/PointConfig.ts
 models/RedeemRewardDto.ts

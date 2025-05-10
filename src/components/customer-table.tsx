@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Edit, Trash } from "lucide-react"
 import { CustomerTableSkeleton } from "./customer-table-skeleton"
+import { Link } from "@tanstack/react-router"
 
 interface CustomerTableProps {
   storeId: string
@@ -64,10 +65,14 @@ export function CustomerTable({ storeId, query }: CustomerTableProps) {
               {/* <TableCell>{formatDate(customer.createdAt)}</TableCell> */}
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                    <span className="sr-only">Editar</span>
-                  </Button>
+                  <Link to="/stores/$storeId/customers/$customerId" params={{ storeId, customerId: customer.id }}>
+
+                    <Button variant="ghost" size="icon">
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Visualizar</span>
+                    </Button>
+                  </Link>
+
                   <Button variant="ghost" size="icon">
                     <Trash className="h-4 w-4" />
                     <span className="sr-only">Excluir</span>

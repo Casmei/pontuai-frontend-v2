@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { toast } from "sonner"
 import { TenantConfig } from "@/gen"
-import { updatePointConfigAction } from "@/action/update-point-config"
+import { useUpdateStoreConfig } from "@/lib/services/store-service"
 
 const formSchema = z.object({
   pointsForMoneySpent: z.coerce.number().min(0.1, "Deve ser pelo menos 0.1"),
@@ -33,6 +33,7 @@ interface ConfigFormProps {
 
 export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { mutateAsync: updateStoreConfig } = useUpdateStoreConfig()
 
   const brlFormatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -49,10 +50,10 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
   })
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-
     try {
-      const [error] = await updatePointConfigAction({
+      setIsLoading(true)
+
+      await updateStoreConfig({
         tenantId: storeId,
         updateTenantSettingsDto: {
           minimumValueForWinPoints: data.minimumValueForWinPoints,
@@ -60,13 +61,6 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
           expirationInDays: data.expirationInDays,
         },
       })
-
-      if (error) {
-        toast.error("Erro ao salvar", {
-          description: error.message || "Erro desconhecido ao atualizar as configurações.",
-        })
-        return
-      }
 
       toast.success("Configurações atualizadas", {
         description: "As configurações foram salvas com sucesso.",

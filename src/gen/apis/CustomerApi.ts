@@ -18,6 +18,7 @@ import type {
   CreateCustomerDto,
   CreateCustomerResponse,
   CustomerWithPointsResponse,
+  GetCustomerDetailResponse,
 } from '../models/index';
 import {
     CreateCustomerDtoFromJSON,
@@ -26,6 +27,8 @@ import {
     CreateCustomerResponseToJSON,
     CustomerWithPointsResponseFromJSON,
     CustomerWithPointsResponseToJSON,
+    GetCustomerDetailResponseFromJSON,
+    GetCustomerDetailResponseToJSON,
 } from '../models/index';
 
 export interface CustomerControllerCreateRequest {
@@ -36,6 +39,11 @@ export interface CustomerControllerCreateRequest {
 export interface CustomerControllerGetAllRequest {
     xTenantId: string;
     query?: string;
+}
+
+export interface CustomerControllerGetCustomerDetailRequest {
+    customerId: string;
+    xTenantId: string;
 }
 
 /**
@@ -144,6 +152,58 @@ export class CustomerApi extends runtime.BaseAPI {
      */
     async customerControllerGetAll(requestParameters: CustomerControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CustomerWithPointsResponse>> {
         const response = await this.customerControllerGetAllRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get unique customer
+     */
+    async customerControllerGetCustomerDetailRaw(requestParameters: CustomerControllerGetCustomerDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetCustomerDetailResponse>> {
+        if (requestParameters['customerId'] == null) {
+            throw new runtime.RequiredError(
+                'customerId',
+                'Required parameter "customerId" was null or undefined when calling customerControllerGetCustomerDetail().'
+            );
+        }
+
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling customerControllerGetCustomerDetail().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/customers/{customerId}`.replace(`{${"customerId"}}`, encodeURIComponent(String(requestParameters['customerId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetCustomerDetailResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get unique customer
+     */
+    async customerControllerGetCustomerDetail(requestParameters: CustomerControllerGetCustomerDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetCustomerDetailResponse> {
+        const response = await this.customerControllerGetCustomerDetailRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

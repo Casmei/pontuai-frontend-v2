@@ -24,7 +24,7 @@ const fakeData = {
       icon: BarChart3,
     },
     {
-      url: `/stores/$storeId/config`,
+      url: `/stores/$storeId/settings`,
       title: "Configurações",
       icon: Settings,
     },

@@ -51,6 +51,32 @@ paths:
       summary: Get customers
       tags:
         - Customer
+  /customers/{customerId}:
+    get:
+      operationId: CustomerController_getCustomerDetail
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          description: UUID that identifies the customer
+          schema:
+            example: bb66747b-cbc0-42fe-94d1-48436b275356
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The customer has been successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerDetailResponse'
+      summary: Get unique customer
+      tags:
+        - Customer
   /transaction:
     post:
       operationId: TransactionController_create
@@ -382,6 +408,71 @@ components:
       required:
         - customer
         - points
+    GetCustomerDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id to identify the customer
+          example: 07275dd6-940c-424a-b37e-bf2c38a1036c
+        name:
+          type: string
+          description: Full name of the member
+          example: Robert Johnson
+        phone:
+          type: string
+          description: Phone number of the member
+          example: (555) 456-7890
+        email:
+          type: string
+          description: Email address of the member
+          example: robert@example.com
+        points:
+          type: number
+          description: Total loyalty or reward points accumulated by the member
+          example: 45
+        memberSince:
+          format: date-time
+          type: string
+          description: Date the member joined, in ISO format
+          example: '2023-03-22'
+        status:
+          type: string
+          description: Current status of the member (e.g., active, inactive)
+          example: inactive
+        tier:
+          type: string
+          description: Tier level of the member, typically based on loyalty or engagement
+          example: Bronze
+        birthdate:
+          type: string
+          description: Birthdate of the member in YYYY-MM-DD format
+          example: '1978-09-30'
+        address:
+          type: string
+          description: Physical address of the member
+          example: 789 Pine St, Nowhere, USA
+        preferences:
+          description: List of user preferences, such as favorite products or services
+          example:
+            - Ice Cream
+          type: array
+          items:
+            type: string
+        tags:
+          description: Tags or labels assigned to the member for segmentation or filtering
+          example:
+            - New Member
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - phone
+        - points
+        - memberSince
+        - status
     AddPointsDto:
       type: object
       properties:

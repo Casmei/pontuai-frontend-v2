@@ -23,6 +23,7 @@ import { Route as StoresStoreIdTransactionsIndexImport } from './routes/stores/$
 import { Route as StoresStoreIdSettingsIndexImport } from './routes/stores/$storeId/settings/index'
 import { Route as StoresStoreIdRewardsIndexImport } from './routes/stores/$storeId/rewards/index'
 import { Route as StoresStoreIdCustomersIndexImport } from './routes/stores/$storeId/customers/index'
+import { Route as StoresStoreIdCustomersCustomerIdIndexImport } from './routes/stores/$storeId/customers/$customerId/index'
 
 // Create/Update Routes
 
@@ -97,6 +98,13 @@ const StoresStoreIdCustomersIndexRoute =
   StoresStoreIdCustomersIndexImport.update({
     id: '/customers/',
     path: '/customers/',
+    getParentRoute: () => StoresStoreIdRoute,
+  } as any)
+
+const StoresStoreIdCustomersCustomerIdIndexRoute =
+  StoresStoreIdCustomersCustomerIdIndexImport.update({
+    id: '/customers/$customerId/',
+    path: '/customers/$customerId/',
     getParentRoute: () => StoresStoreIdRoute,
   } as any)
 
@@ -188,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoresStoreIdTransactionsIndexImport
       parentRoute: typeof StoresStoreIdImport
     }
+    '/stores/$storeId/customers/$customerId/': {
+      id: '/stores/$storeId/customers/$customerId/'
+      path: '/customers/$customerId'
+      fullPath: '/stores/$storeId/customers/$customerId'
+      preLoaderRoute: typeof StoresStoreIdCustomersCustomerIdIndexImport
+      parentRoute: typeof StoresStoreIdImport
+    }
   }
 }
 
@@ -210,6 +225,7 @@ interface StoresStoreIdRouteChildren {
   StoresStoreIdRewardsIndexRoute: typeof StoresStoreIdRewardsIndexRoute
   StoresStoreIdSettingsIndexRoute: typeof StoresStoreIdSettingsIndexRoute
   StoresStoreIdTransactionsIndexRoute: typeof StoresStoreIdTransactionsIndexRoute
+  StoresStoreIdCustomersCustomerIdIndexRoute: typeof StoresStoreIdCustomersCustomerIdIndexRoute
 }
 
 const StoresStoreIdRouteChildren: StoresStoreIdRouteChildren = {
@@ -218,6 +234,8 @@ const StoresStoreIdRouteChildren: StoresStoreIdRouteChildren = {
   StoresStoreIdRewardsIndexRoute: StoresStoreIdRewardsIndexRoute,
   StoresStoreIdSettingsIndexRoute: StoresStoreIdSettingsIndexRoute,
   StoresStoreIdTransactionsIndexRoute: StoresStoreIdTransactionsIndexRoute,
+  StoresStoreIdCustomersCustomerIdIndexRoute:
+    StoresStoreIdCustomersCustomerIdIndexRoute,
 }
 
 const StoresStoreIdRouteWithChildren = StoresStoreIdRoute._addFileChildren(
@@ -236,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/stores/$storeId/rewards': typeof StoresStoreIdRewardsIndexRoute
   '/stores/$storeId/settings': typeof StoresStoreIdSettingsIndexRoute
   '/stores/$storeId/transactions': typeof StoresStoreIdTransactionsIndexRoute
+  '/stores/$storeId/customers/$customerId': typeof StoresStoreIdCustomersCustomerIdIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -249,6 +268,7 @@ export interface FileRoutesByTo {
   '/stores/$storeId/rewards': typeof StoresStoreIdRewardsIndexRoute
   '/stores/$storeId/settings': typeof StoresStoreIdSettingsIndexRoute
   '/stores/$storeId/transactions': typeof StoresStoreIdTransactionsIndexRoute
+  '/stores/$storeId/customers/$customerId': typeof StoresStoreIdCustomersCustomerIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -265,6 +285,7 @@ export interface FileRoutesById {
   '/stores/$storeId/rewards/': typeof StoresStoreIdRewardsIndexRoute
   '/stores/$storeId/settings/': typeof StoresStoreIdSettingsIndexRoute
   '/stores/$storeId/transactions/': typeof StoresStoreIdTransactionsIndexRoute
+  '/stores/$storeId/customers/$customerId/': typeof StoresStoreIdCustomersCustomerIdIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -281,6 +302,7 @@ export interface FileRouteTypes {
     | '/stores/$storeId/rewards'
     | '/stores/$storeId/settings'
     | '/stores/$storeId/transactions'
+    | '/stores/$storeId/customers/$customerId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -293,6 +315,7 @@ export interface FileRouteTypes {
     | '/stores/$storeId/rewards'
     | '/stores/$storeId/settings'
     | '/stores/$storeId/transactions'
+    | '/stores/$storeId/customers/$customerId'
   id:
     | '__root__'
     | '/_landing'
@@ -307,6 +330,7 @@ export interface FileRouteTypes {
     | '/stores/$storeId/rewards/'
     | '/stores/$storeId/settings/'
     | '/stores/$storeId/transactions/'
+    | '/stores/$storeId/customers/$customerId/'
   fileRoutesById: FileRoutesById
 }
 
@@ -365,7 +389,8 @@ export const routeTree = rootRoute
         "/stores/$storeId/customers/",
         "/stores/$storeId/rewards/",
         "/stores/$storeId/settings/",
-        "/stores/$storeId/transactions/"
+        "/stores/$storeId/transactions/",
+        "/stores/$storeId/customers/$customerId/"
       ]
     },
     "/stores/create": {
@@ -396,6 +421,10 @@ export const routeTree = rootRoute
     },
     "/stores/$storeId/transactions/": {
       "filePath": "stores/$storeId/transactions/index.tsx",
+      "parent": "/stores/$storeId"
+    },
+    "/stores/$storeId/customers/$customerId/": {
+      "filePath": "stores/$storeId/customers/$customerId/index.tsx",
       "parent": "/stores/$storeId"
     }
   }

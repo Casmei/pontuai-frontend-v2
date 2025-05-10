@@ -1,6 +1,6 @@
 .PHONY: generate clean
 
-YAML_URL=https://api-pontuai.kontact.com.br/docs-yaml
+YAML_URL=http://localhost:3001/docs-yaml
 YAML_FILE=api.yaml
 OUTPUT_DIR=./src/gen
 

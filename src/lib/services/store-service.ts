@@ -63,7 +63,6 @@ export const useGetStoreById = (id: string) => {
   })
 }
 
-// CREATE tenant
 export const useCreateStore = () => {
   const { getClient } = useTenantsService()
   const queryClient = useQueryClient()
@@ -79,7 +78,6 @@ export const useCreateStore = () => {
   })
 }
 
-// UPDATE config
 export const useUpdateStoreConfig = () => {
   const { getClient } = useTenantsService()
   const queryClient = useQueryClient()
@@ -89,13 +87,12 @@ export const useUpdateStoreConfig = () => {
       const client = await getClient()
       return client.tenantControllerUpdateConfig(data)
     },
-    onSuccess: (_, payload) => {
-      queryClient.invalidateQueries({ queryKey: ["stores"] })
+    onSuccess: async (_, payload) => {
+      await queryClient.invalidateQueries({ queryKey: ["stores"] })
     },
   })
 }
 
-// MOCKED store stats
 export const useGetStoreStats = (storeId: string) => {
   return useQuery({
     queryKey: ["storeStats", storeId],
