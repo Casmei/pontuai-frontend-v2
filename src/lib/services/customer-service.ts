@@ -1,4 +1,4 @@
-import { Configuration, CustomerApi, CustomerControllerCreateRequest, CustomerControllerGetAllRequest, CustomerControllerGetCustomerDetailRequest } from "@/gen"
+import { Configuration, CustomerApi, CustomerControllerCreateRequest, CustomerControllerGetAllRequest, CustomerControllerGetCustomerDetailRequest, CustomerControllerGetCustomerTransactionDetailRequest } from "@/gen"
 import { useLogto } from "@logto/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -47,7 +47,7 @@ export function useGetCustomerDetail({ xTenantId, customerId }: CustomerControll
   const { getClient } = useCustomerService();
 
   return useQuery({
-    queryKey: ["customer"],
+    queryKey: ["customer", customerId],
     queryFn: async () => {
       const client = await getClient()
       return client.customerControllerGetCustomerDetail({ xTenantId, customerId })
@@ -55,6 +55,18 @@ export function useGetCustomerDetail({ xTenantId, customerId }: CustomerControll
   })
 }
 
+export function useGetCustomerTransactionDetail({ xTenantId, customerId }: CustomerControllerGetCustomerTransactionDetailRequest) {
+
+  const { getClient } = useCustomerService();
+
+  return useQuery({
+    queryKey: ["customer", "transaction", customerId],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.customerControllerGetCustomerTransactionDetail({ xTenantId, customerId })
+    },
+  })
+}
 
 export function useCreateCustomer() {
   const { getClient } = useCustomerService();

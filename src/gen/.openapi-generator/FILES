@@ -15,6 +15,7 @@ models/CreateTenantResponse.ts
 models/CustomerResponse.ts
 models/CustomerWithPointsResponse.ts
 models/GetCustomerDetailResponse.ts
+models/GetCustomerTransactionDetailResponse.ts
 models/GetTenant.ts
 models/PointConfig.ts
 models/RedeemRewardDto.ts

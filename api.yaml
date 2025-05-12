@@ -77,6 +77,32 @@ paths:
       summary: Get unique customer
       tags:
         - Customer
+  /customers/{customerId}/transactions:
+    get:
+      operationId: CustomerController_getCustomerTransactionDetail
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          description: UUID that identifies the customer
+          schema:
+            example: bb66747b-cbc0-42fe-94d1-48436b275356
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The transaction customer details  has been successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerTransactionDetailResponse'
+      summary: Get customer transaction details
+      tags:
+        - Customer
   /transaction:
     post:
       operationId: TransactionController_create
@@ -473,70 +499,6 @@ components:
         - points
         - memberSince
         - status
-    AddPointsDto:
-      type: object
-      properties:
-        moneySpent:
-          type: number
-          description: Money spent in the transaction
-          example: 100
-        customerId:
-          type: string
-          description: ID of the customer related to the transaction
-          example: 5e887ac4-7eed-2530-91be-10cc0a2c0ef2
-      required:
-        - moneySpent
-        - customerId
-    AddPointsResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the point transaction
-          example: e19decf2-7a0e-4230-8b14-a9bbf49d13fc
-        type:
-          type: string
-          description: The type of the point transaction (e.g., input or output)
-          example: input
-          enum:
-            - output
-            - input
-        points:
-          type: number
-          description: Amount of points added or removed
-          example: 100
-        value:
-          type: number
-          description: Amount of value spent
-          example: 1536
-        customerId:
-          type: string
-          description: The customer identifier related to the point transaction
-          example: bb66747b-cbc0-42fe-94d1-48436b275356
-        rewardId:
-          type: object
-          description: >-
-            The reward identifier if the points are linked to a reward (null if
-            not applicable)
-          example: null
-          nullable: true
-        createdAt:
-          type: string
-          description: The date and time the transaction was created
-          example: '2025-04-13T23:29:15.221Z'
-        updatedAt:
-          type: string
-          description: The date and time the transaction was last updated
-          example: '2025-04-13T23:29:15.221Z'
-      required:
-        - id
-        - type
-        - points
-        - value
-        - customerId
-        - rewardId
-        - createdAt
-        - updatedAt
     RewardResponse:
       type: object
       properties:
@@ -608,6 +570,100 @@ components:
         - updatedAt
         - customer
         - reward
+    GetCustomerTransactionDetailResponse:
+      type: object
+      properties:
+        transactions:
+          description: List of transactions performed by the customer
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponse'
+        earnedPoints:
+          type: number
+          description: Total points earned by the customer through input transactions
+          example: 300
+        redeemedPoints:
+          type: number
+          description: Total points redeemed by the customer through output transactions
+          example: 150
+        expiredPoints:
+          type: number
+          description: Total points that have expired
+          example: 0
+        avaliablePoints:
+          type: number
+          description: Total points currently available for the customer
+          example: 150
+      required:
+        - transactions
+        - earnedPoints
+        - redeemedPoints
+        - expiredPoints
+        - avaliablePoints
+    AddPointsDto:
+      type: object
+      properties:
+        moneySpent:
+          type: number
+          description: Money spent in the transaction
+          example: 100
+        customerId:
+          type: string
+          description: ID of the customer related to the transaction
+          example: 5e887ac4-7eed-2530-91be-10cc0a2c0ef2
+      required:
+        - moneySpent
+        - customerId
+    AddPointsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the point transaction
+          example: e19decf2-7a0e-4230-8b14-a9bbf49d13fc
+        type:
+          type: string
+          description: The type of the point transaction (e.g., input or output)
+          example: input
+          enum:
+            - output
+            - input
+        points:
+          type: number
+          description: Amount of points added or removed
+          example: 100
+        value:
+          type: number
+          description: Amount of value spent
+          example: 1536
+        customerId:
+          type: string
+          description: The customer identifier related to the point transaction
+          example: bb66747b-cbc0-42fe-94d1-48436b275356
+        rewardId:
+          type: object
+          description: >-
+            The reward identifier if the points are linked to a reward (null if
+            not applicable)
+          example: null
+          nullable: true
+        createdAt:
+          type: string
+          description: The date and time the transaction was created
+          example: '2025-04-13T23:29:15.221Z'
+        updatedAt:
+          type: string
+          description: The date and time the transaction was last updated
+          example: '2025-04-13T23:29:15.221Z'
+      required:
+        - id
+        - type
+        - points
+        - value
+        - customerId
+        - rewardId
+        - createdAt
+        - updatedAt
     CreateTenantDto:
       type: object
       properties:

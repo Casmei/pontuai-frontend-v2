@@ -11,7 +11,12 @@ export default defineConfig({
       target: "react",
       autoCodeSplitting: true,
     }) as unknown as PluginOption,
-    react(),
+    react({
+      babel: {
+        plugins: [["babel-plugin-react-compiler", { target: "19" }]
+        ],
+      },
+    }),
     tailwindcss(),
   ],
   resolve: {

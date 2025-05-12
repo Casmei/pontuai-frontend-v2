@@ -19,6 +19,7 @@ import type {
   CreateCustomerResponse,
   CustomerWithPointsResponse,
   GetCustomerDetailResponse,
+  GetCustomerTransactionDetailResponse,
 } from '../models/index';
 import {
     CreateCustomerDtoFromJSON,
@@ -29,6 +30,8 @@ import {
     CustomerWithPointsResponseToJSON,
     GetCustomerDetailResponseFromJSON,
     GetCustomerDetailResponseToJSON,
+    GetCustomerTransactionDetailResponseFromJSON,
+    GetCustomerTransactionDetailResponseToJSON,
 } from '../models/index';
 
 export interface CustomerControllerCreateRequest {
@@ -42,6 +45,11 @@ export interface CustomerControllerGetAllRequest {
 }
 
 export interface CustomerControllerGetCustomerDetailRequest {
+    customerId: string;
+    xTenantId: string;
+}
+
+export interface CustomerControllerGetCustomerTransactionDetailRequest {
     customerId: string;
     xTenantId: string;
 }
@@ -204,6 +212,58 @@ export class CustomerApi extends runtime.BaseAPI {
      */
     async customerControllerGetCustomerDetail(requestParameters: CustomerControllerGetCustomerDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetCustomerDetailResponse> {
         const response = await this.customerControllerGetCustomerDetailRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get customer transaction details
+     */
+    async customerControllerGetCustomerTransactionDetailRaw(requestParameters: CustomerControllerGetCustomerTransactionDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetCustomerTransactionDetailResponse>> {
+        if (requestParameters['customerId'] == null) {
+            throw new runtime.RequiredError(
+                'customerId',
+                'Required parameter "customerId" was null or undefined when calling customerControllerGetCustomerTransactionDetail().'
+            );
+        }
+
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling customerControllerGetCustomerTransactionDetail().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/customers/{customerId}/transactions`.replace(`{${"customerId"}}`, encodeURIComponent(String(requestParameters['customerId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetCustomerTransactionDetailResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get customer transaction details
+     */
+    async customerControllerGetCustomerTransactionDetail(requestParameters: CustomerControllerGetCustomerTransactionDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetCustomerTransactionDetailResponse> {
+        const response = await this.customerControllerGetCustomerTransactionDetailRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

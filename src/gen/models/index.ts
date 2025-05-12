@@ -11,6 +11,7 @@ export * from './CreateTenantResponse';
 export * from './CustomerResponse';
 export * from './CustomerWithPointsResponse';
 export * from './GetCustomerDetailResponse';
+export * from './GetCustomerTransactionDetailResponse';
 export * from './GetTenant';
 export * from './PointConfig';
 export * from './RedeemRewardDto';
