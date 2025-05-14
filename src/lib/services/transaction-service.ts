@@ -1,44 +1,76 @@
+// src/lib/services/transactions-service.ts
 import {
   Configuration,
-  ResponseError,
   TransactionApi,
-  TransactionControllerCreateRequest,
-  TransactionControllerGetAllRequest,
-} from "@/gen"
-import { getAccessTokenRSC } from "@logto/next/server-actions"
-import { logtoConfig } from "@/config/logto"
+  type TransactionControllerCreateRequest,
+  type TransactionControllerGetAllRequest,
+} from "@/gen";
+import { useLogto } from "@logto/react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const API_URL = process.env.API_URL
-const apiClient = new TransactionApi(
-  new Configuration({
-    basePath: API_URL,
-    accessToken: async () => {
-      return await getAccessTokenRSC(logtoConfig, logtoConfig.resources![0])
-    },
-  }),
-)
+const API_URL = import.meta.env.VITE_API_URL; // mesmo env que Tenants
+const RESOURCE = "https://pontuai-api.kontact.com.br"; // mesmo resource do Logto
 
-export async function getTransactions(data: TransactionControllerGetAllRequest) {
-  try {
-    const response = await apiClient.transactionControllerGetAll(data)
-    return [null, response] as const
-  } catch (e) {
-    console.error(e)
-    return [new Error("Falha ao listar transações"), null] as const
-  }
-}
+const createApiClient = (accessToken: string) =>
+  new TransactionApi(
+    new Configuration({
+      basePath: API_URL,
+      accessToken,
+    })
+  );
 
-export async function createTransaction(data: TransactionControllerCreateRequest) {
-  try {
-    const response = await apiClient.transactionControllerCreate(data)
-    return [null, response] as const
-  } catch (error) {
-    if (error instanceof ResponseError) {
-      const responseBody = await error.response.json().catch(() => null)
-      const message = responseBody?.message || "Erro na requisição da transação."
-      return [new Error(message), null]
+const useTransactionsService = () => {
+  const logto = useLogto();
+
+  const getClient = async () => {
+    if (!logto.isAuthenticated) {
+      throw new Error("Logto não autenticado");
     }
 
-    return [new Error("Erro desconhecido ao criar transação."), null]
-  }
-}
+    const token = await logto.getAccessToken(RESOURCE);
+    if (!token) {
+      throw new Error("Token não encontrado");
+    }
+
+    return createApiClient(token);
+  };
+
+  return { getClient, isAuthenticated: logto.isAuthenticated };
+};
+
+export const useGetTransactions = (
+  params: TransactionControllerGetAllRequest
+) => {
+  const { getClient } = useTransactionsService();
+
+  return useQuery({
+    queryKey: ["transactions", params], // cache separado por filtros
+    queryFn: async () => {
+      const client = await getClient();
+      return client.transactionControllerGetAll(params);
+    },
+    enabled: !!params, // só roda se params existir
+  });
+};
+
+export function useCreateTransaction() {
+  const { getClient } = useTransactionsService();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: TransactionControllerCreateRequest) => {
+      const client = await getClient();
+      return client.transactionControllerCreate(data);
+    },
+    onSuccess: async (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          variables.addPointsDto.customerId,
+        ],
+      });
+    },
+    onError: (error) => {
+      console.error("Falha ao criar cliente:", error);
+    },
+  });
+};

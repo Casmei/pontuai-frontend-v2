@@ -1,76 +1,110 @@
-import { Configuration, CustomerApi, CustomerControllerCreateRequest, CustomerControllerGetAllRequest, CustomerControllerGetCustomerDetailRequest, CustomerControllerGetCustomerTransactionDetailRequest } from "@/gen"
-import { useLogto } from "@logto/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  Configuration,
+  CustomerApi,
+  CustomerControllerCreateRequest,
+  CustomerControllerGetAllRequest,
+  CustomerControllerGetCustomerDetailRequest,
+  CustomerControllerGetCustomerTransactionDetailRequest,
+} from "@/gen";
+import { useLogto } from "@logto/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 const createApiClient = (accessToken: string) =>
-  new CustomerApi(new Configuration({ basePath: API_URL, accessToken }))
+  new CustomerApi(new Configuration({ basePath: API_URL, accessToken }));
 
 const useCustomerService = () => {
-  const logto = useLogto()
+  const logto = useLogto();
 
   const getClient = async () => {
-    console.log("Logto is authenticated:", logto)
+    console.log("Logto is authenticated:", logto);
 
     if (!logto.isAuthenticated) {
-      throw new Error("Logto não autenticado")
+      throw new Error("Logto não autenticado");
     }
 
-    const token = await logto.getAccessToken("https://pontuai-api.kontact.com.br")
+    const token = await logto.getAccessToken(
+      "https://pontuai-api.kontact.com.br"
+    );
 
     if (!token) {
-      throw new Error("Token não encontrado")
+      throw new Error("Token não encontrado");
     }
 
-    return createApiClient(token)
-  }
+    return createApiClient(token);
+  };
 
-  return { getClient, isAuthenticated: logto.isAuthenticated }
-}
+  return { getClient, isAuthenticated: logto.isAuthenticated };
+};
 
-export function useGetCustomers({ xTenantId, query }: CustomerControllerGetAllRequest) {
-
+export function useGetCustomers({
+  xTenantId,
+  query,
+}: CustomerControllerGetAllRequest) {
   const { getClient } = useCustomerService();
 
   return useQuery({
     queryKey: ["customer", query],
     queryFn: async () => {
-      const client = await getClient()
-      return client.customerControllerGetAll({ xTenantId, query })
+      const client = await getClient();
+      return client.customerControllerGetAll({ xTenantId, query });
     },
-  })
+  });
 }
 
-export function useGetCustomerDetail({ xTenantId, customerId }: CustomerControllerGetCustomerDetailRequest) {
-
+export function useGetCustomerDetail(
+  { xTenantId, customerId }: CustomerControllerGetCustomerDetailRequest,
+  options?: {
+    enabled?: boolean;
+    staleTime?: number;
+  }
+) {
   const { getClient } = useCustomerService();
 
   return useQuery({
     queryKey: ["customer", customerId],
+    enabled: options?.enabled,
+    staleTime: options?.staleTime,
     queryFn: async () => {
-      const client = await getClient()
-      return client.customerControllerGetCustomerDetail({ xTenantId, customerId })
+      const client = await getClient();
+      return client.customerControllerGetCustomerDetail({
+        xTenantId,
+        customerId,
+      });
     },
-  })
+  });
 }
 
-export function useGetCustomerTransactionDetail({ xTenantId, customerId }: CustomerControllerGetCustomerTransactionDetailRequest) {
-
+export function useGetCustomerTransactionDetail(
+  {
+    xTenantId,
+    customerId,
+  }: CustomerControllerGetCustomerTransactionDetailRequest,
+  options?: {
+    enabled?: boolean;
+    staleTime?: number;
+  }
+) {
   const { getClient } = useCustomerService();
 
   return useQuery({
-    queryKey: ["customer", "transaction", customerId],
+    enabled: options?.enabled,
+    staleTime: options?.staleTime,
+    queryKey: [customerId],
     queryFn: async () => {
-      const client = await getClient()
-      return client.customerControllerGetCustomerTransactionDetail({ xTenantId, customerId })
+      const client = await getClient();
+      return client.customerControllerGetCustomerTransactionDetail({
+        xTenantId,
+        customerId,
+      });
     },
-  })
+  });
 }
 
 export function useCreateCustomer() {
   const { getClient } = useCustomerService();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: CustomerControllerCreateRequest) => {
@@ -78,11 +112,10 @@ export function useCreateCustomer() {
       return client.customerControllerCreate(data);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['customer'] });
+      await queryClient.invalidateQueries({ queryKey: ["customer"] });
     },
     onError: (error) => {
-      console.error('Falha ao criar cliente:', error);
+      console.error("Falha ao criar cliente:", error);
     },
   });
 }
-

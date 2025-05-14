@@ -1,6 +1,4 @@
-import { getStoreStats } from "@/lib/services/store-service"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatCurrency } from "@/lib/utils"
 import { Users, CreditCard, Gift, TrendingUp } from "lucide-react"
 
 interface DashboardStatsProps {
@@ -8,8 +6,6 @@ interface DashboardStatsProps {
 }
 
 export async function DashboardStats({ storeId }: DashboardStatsProps) {
-  const stats = await getStoreStats(storeId)
-
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>

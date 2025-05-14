@@ -16,9 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { createReward } from "@/lib/services/reward-service"
 import { toast } from "sonner"
-import { createRewardAction } from "@/action/create-reward"
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -45,14 +43,14 @@ export function RewardForm({ storeId }: RewardFormProps) {
   async function onSubmit({ name, pointsRequired, description }: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true)
-      await createRewardAction({
-        xTenantId: storeId,
-        createRewardDto: {
-          name,
-          description: description || "",
-          pointValue: pointsRequired,
-        },
-      })
+      // await createRewardAction({
+      //   xTenantId: storeId,
+      //   createRewardDto: {
+      //     name,
+      //     description: description || "",
+      //     pointValue: pointsRequired,
+      //   },
+      // })
       toast.success("Recompensa adicionada", {
         description: "A recompensa foi adicionada com sucesso.",
       })

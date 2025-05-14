@@ -63,20 +63,20 @@ export const useGetStoreById = (id: string) => {
   })
 }
 
-export const useCreateStore = () => {
-  const { getClient } = useTenantsService()
-  const queryClient = useQueryClient()
+// export const useCreateStore = () => {
+//   const { getClient } = useTenantsService()
+//   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: async (data: TenantControllerCreateRequest) => {
-      const client = await getClient()
-      return client.tenantControllerCreate(data)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stores"] })
-    },
-  })
-}
+//   return useMutation({
+//     mutationFn: async (data: TenantControllerCreateRequest) => {
+//       const client = await getClient()
+//       return client.tenantControllerCreate(data)
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["stores"] })
+//     },
+//   })
+// }
 
 export const useUpdateStoreConfig = () => {
   const { getClient } = useTenantsService()

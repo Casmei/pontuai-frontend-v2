@@ -26,7 +26,7 @@ export function StoreCard({ store }: StoreCardProps) {
       </CardContent>
       <CardFooter>
         <Link
-          to="/stores/$storeId"
+          to="/stores/$storeId/customers"
           params={{
             storeId: store.id,
           }}

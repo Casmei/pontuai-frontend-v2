@@ -18,11 +18,11 @@ import {
 
 const fakeData = {
   Loja: [
-    {
-      url: `/stores/$storeId/`,
-      title: "Dashboard",
-      icon: BarChart3,
-    },
+    // {
+    //   url: `/stores/$storeId/`,
+    //   title: "Dashboard",
+    //   icon: BarChart3,
+    // },
     {
       url: `/stores/$storeId/settings`,
       title: "Configurações",
@@ -33,16 +33,16 @@ const fakeData = {
       title: "Clientes",
       icon: Users,
     },
-    {
-      url: `/stores/$storeId/rewards`,
-      title: "Recompensas",
-      icon: Gift,
-    },
-    {
-      url: `/stores/$storeId/transactions`,
-      title: "Transações",
-      icon: Receipt,
-    },
+    // {
+    //   url: `/stores/$storeId/rewards`,
+    //   title: "Recompensas",
+    //   icon: Gift,
+    // },
+    // {
+    //   url: `/stores/$storeId/transactions`,
+    //   title: "Transações",
+    //   icon: Receipt,
+    // },
   ],
 }
 
