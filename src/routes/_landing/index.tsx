@@ -14,6 +14,8 @@ function RouteComponent() {
   const [count, setCount] = useState(0)
   const { signIn } = useLogto()
 
+  const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
+
   // Animação de contagem para estatísticas
   useEffect(() => {
     const interval = setInterval(() => {
@@ -51,7 +53,7 @@ function RouteComponent() {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Button
-            onClick={() => signIn("http://localhost:3000/callback")} // TODO: Usar env
+            onClick={() => signIn(`${VITE_FRONTEND_URL}/callback`)} // TODO: Usar env
             className="bg-amber-500 text-white px-6 py-3 rounded-md text-center hover:bg-amber-600 transition-colors inline-flex items-center justify-center"
           >
             Área do atendente
