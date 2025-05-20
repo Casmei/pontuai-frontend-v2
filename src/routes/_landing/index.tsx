@@ -14,7 +14,7 @@ function RouteComponent() {
   const [count, setCount] = useState(0)
   const { signIn } = useLogto()
 
-  const VITE_FRONTEND_URL = import.meta.env.BASE_URL
+  const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
 
   // Animação de contagem para estatísticas
   useEffect(() => {
