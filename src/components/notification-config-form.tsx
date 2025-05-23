@@ -130,7 +130,7 @@ export function NotificationConfigForm({ storeId, initialData }: NotificationCon
             />
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading || !form.formState.isValid}>
                 {isLoading ? "Salvando..." : "Salvar Configurações"}
               </Button>
             </div>

@@ -61,16 +61,9 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
           moneySpent: values.moneySpent,
         },
       })
-
-      toast.success("Cliente adicionado", {
-        description: "O cliente foi adicionado com sucesso.",
-      })
       form.reset()
     } catch (error) {
-      console.error(error)
-      toast.error("Erro", {
-        description: "Ocorreu um erro ao adicionar o cliente.",
-      })
+      form.reset()
     } finally {
       setIsLoading(false)
     }
@@ -121,7 +114,7 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
               render={({ field }) => {
                 const handleChange = useCallback(
                   (e: React.ChangeEvent<HTMLInputElement>) => {
-                    const rawValue = e.target.value.replace(/\D/g, "") // Remove tudo que não é número
+                    const rawValue = e.target.value.replace(/\D/g, "")
                     const numericValue = Number(rawValue) / 100
                     field.onChange(numericValue)
                   },
@@ -146,7 +139,7 @@ export function CustomerForm({ storeId }: CustomerFormProps) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading || !form.formState.isValid}>
                 {isLoading ? "Adicionando..." : "Adicionar Cliente"}
               </Button>
             </DialogClose>

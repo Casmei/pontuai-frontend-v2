@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client"
 import "./index.css"
 import { routeTree } from "./routeTree.gen"
 import { LogtoProvider } from "@logto/react"
+import { Toaster } from "sonner"
 
 const router = createRouter({
   routeTree,
@@ -39,6 +40,7 @@ if (!rootElement.innerHTML) {
         }}
       >
         <QueryClientProvider client={queryClient}>
+          <Toaster />
           <InnerApp />
         </QueryClientProvider>
       </LogtoProvider>

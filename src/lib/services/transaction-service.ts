@@ -1,12 +1,14 @@
 // src/lib/services/transactions-service.ts
 import {
   Configuration,
+  ResponseError,
   TransactionApi,
   type TransactionControllerCreateRequest,
   type TransactionControllerGetAllRequest,
 } from "@/gen";
 import { useLogto } from "@logto/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const API_URL = import.meta.env.VITE_API_URL; // mesmo env que Tenants
 const RESOURCE = "https://pontuai-api.kontact.com.br"; // mesmo resource do Logto
@@ -44,12 +46,12 @@ export const useGetTransactions = (
   const { getClient } = useTransactionsService();
 
   return useQuery({
-    queryKey: ["transactions", params], // cache separado por filtros
+    queryKey: ["transactions", params],
     queryFn: async () => {
       const client = await getClient();
       return client.transactionControllerGetAll(params);
     },
-    enabled: !!params, // só roda se params existir
+    enabled: !!params,
   });
 };
 
@@ -68,9 +70,21 @@ export function useCreateTransaction() {
           variables.addPointsDto.customerId,
         ],
       });
+
+      toast.success("Transação criada", {
+        description: "A transação foi criada com sucesso! 🎉",
+      })
     },
-    onError: (error) => {
-      console.error("Falha ao criar cliente:", error);
+    onError: async (err) => {
+      if (err instanceof ResponseError) {
+        const json = await err.response.json();
+
+        toast.error("Erro", {
+          description: json.message,
+        });
+      } else {
+        console.error("Erro desconhecido:", err);
+      }
     },
   });
 };

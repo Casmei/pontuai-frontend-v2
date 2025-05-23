@@ -23,7 +23,7 @@ import { useUpdateStoreConfig } from "@/lib/services/store-service"
 const formSchema = z.object({
   pointsForMoneySpent: z.coerce.number().min(0.1, "Deve ser pelo menos 0.1"),
   expirationInDays: z.coerce.number().int().min(1, "Deve ser pelo menos 1 dia"),
-  minimumValueForWinPoints: z.coerce.number().min(1, "Deve ser pelo menos 1 ponto"),
+  minimumValueForWinPoints: z.coerce.number().min(1, "Deve ser pelo menos 1 real"),
 })
 
 interface ConfigFormProps {
@@ -144,7 +144,7 @@ export function ConfigForm({ storeId, initialData }: ConfigFormProps) {
               }}
             />
             <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading || !form.formState.isValid}>
                 {isLoading ? "Salvando..." : "Salvar Configurações"}
               </Button>
             </div>

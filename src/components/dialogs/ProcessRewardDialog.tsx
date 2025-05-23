@@ -27,6 +27,7 @@ import {
 } from "../ui/form";
 import { useRedeemReward } from "@/lib/services/reward-service";
 import { useState } from "react";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 type ProcessRewardModalProps = {
     storeId: string;
@@ -117,22 +118,25 @@ export const ProcessRewardModal: React.FC<ProcessRewardModalProps> = ({
                     />
 
                     <DialogFooter>
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Processando...
-                                </>
-                            ) : (
-                                <>
-                                    <Gift className="w-4 h-4 mr-2" />
-                                    Processar Resgate
-                                </>
-                            )}
-                        </Button>
+                        <DialogClose asChild>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting || !form.formState.isValid}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Processando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Gift className="w-4 h-4 mr-2" />
+                                        Processar Resgate
+                                    </>
+                                )}
+                            </Button>
+                        </DialogClose>
+
                     </DialogFooter>
                 </form>
             </Form>

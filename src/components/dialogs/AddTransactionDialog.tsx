@@ -22,6 +22,7 @@ import {
 import { useCallback, useState } from "react";
 import { Input } from "../ui/input";
 import { useCreateTransaction } from "@/lib/services/transaction-service";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 type ProcessRewardModalProps = {
     storeId: string;
@@ -56,7 +57,7 @@ export const AddTransactionDialog: React.FC<ProcessRewardModalProps> = ({
             });
             form.reset({ amount: 0 });
         } catch (error) {
-            console.error("Erro ao resgatar prêmio:", error);
+            form.reset({ amount: 0 });
         } finally {
             setIsSubmitting(false);
         }
@@ -99,19 +100,21 @@ export const AddTransactionDialog: React.FC<ProcessRewardModalProps> = ({
                     />
 
                     <DialogFooter>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Processando...
-                                </>
-                            ) : (
-                                <>
-                                    <Gift className="w-4 h-4 mr-2" />
-                                    Adicionar transação
-                                </>
-                            )}
-                        </Button>
+                        <DialogClose asChild>
+                            <Button type="submit" disabled={isSubmitting || !form.formState.isValid}>
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Processando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Gift className="w-4 h-4 mr-2" />
+                                        Adicionar transação
+                                    </>
+                                )}
+                            </Button>
+                        </DialogClose>
                     </DialogFooter>
                 </form>
             </Form>

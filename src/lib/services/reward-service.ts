@@ -5,12 +5,14 @@ import {
   CustomerControllerGetAllRequest,
   CustomerControllerGetCustomerDetailRequest,
   CustomerControllerGetCustomerTransactionDetailRequest,
+  ResponseError,
   RewardApi,
   RewardControllerAllRequest,
   RewardControllerRedeemRequest,
 } from "@/gen";
 import { useLogto } from "@logto/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,8 +23,6 @@ const useRewardService = () => {
   const logto = useLogto();
 
   const getClient = async () => {
-    console.log("Logto is authenticated:", logto);
-
     if (!logto.isAuthenticated) {
       throw new Error("Logto não autenticado");
     }
@@ -74,9 +74,21 @@ export function useRedeemReward() {
       await queryClient.invalidateQueries({
         queryKey: [variables.redeemRewardDto.customerId],
       });
+
+      toast.success("Prêmio resgatado", {
+        description: "O prêmio foi resgatado com sucesso! 🎉",
+      })
     },
-    onError: (error) => {
-      console.error("Falha ao criar cliente:", error);
+    onError: async (err) => {
+      if (err instanceof ResponseError) {
+        const json = await err.response.json();
+
+        toast.error("Erro", {
+          description: json.message,
+        });
+      } else {
+        console.error("Erro desconhecido:", err);
+      }
     },
   });
 }
