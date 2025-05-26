@@ -17,21 +17,21 @@ import * as runtime from '../runtime';
 import type {
   CreateCustomerDto,
   CreateCustomerResponse,
-  CustomerWithPointsResponse,
   GetCustomerDetailResponse,
   GetCustomerTransactionDetailResponse,
+  PaginatedCustomerResponse,
 } from '../models/index';
 import {
     CreateCustomerDtoFromJSON,
     CreateCustomerDtoToJSON,
     CreateCustomerResponseFromJSON,
     CreateCustomerResponseToJSON,
-    CustomerWithPointsResponseFromJSON,
-    CustomerWithPointsResponseToJSON,
     GetCustomerDetailResponseFromJSON,
     GetCustomerDetailResponseToJSON,
     GetCustomerTransactionDetailResponseFromJSON,
     GetCustomerTransactionDetailResponseToJSON,
+    PaginatedCustomerResponseFromJSON,
+    PaginatedCustomerResponseToJSON,
 } from '../models/index';
 
 export interface CustomerControllerCreateRequest {
@@ -42,6 +42,8 @@ export interface CustomerControllerCreateRequest {
 export interface CustomerControllerGetAllRequest {
     xTenantId: string;
     query?: string;
+    limit?: any;
+    page?: any;
 }
 
 export interface CustomerControllerGetCustomerDetailRequest {
@@ -117,7 +119,7 @@ export class CustomerApi extends runtime.BaseAPI {
     /**
      * Get customers
      */
-    async customerControllerGetAllRaw(requestParameters: CustomerControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CustomerWithPointsResponse>>> {
+    async customerControllerGetAllRaw(requestParameters: CustomerControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedCustomerResponse>> {
         if (requestParameters['xTenantId'] == null) {
             throw new runtime.RequiredError(
                 'xTenantId',
@@ -129,6 +131,14 @@ export class CustomerApi extends runtime.BaseAPI {
 
         if (requestParameters['query'] != null) {
             queryParameters['query'] = requestParameters['query'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -152,13 +162,13 @@ export class CustomerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CustomerWithPointsResponseFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedCustomerResponseFromJSON(jsonValue));
     }
 
     /**
      * Get customers
      */
-    async customerControllerGetAll(requestParameters: CustomerControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CustomerWithPointsResponse>> {
+    async customerControllerGetAll(requestParameters: CustomerControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedCustomerResponse> {
         const response = await this.customerControllerGetAllRaw(requestParameters, initOverrides);
         return await response.value();
     }

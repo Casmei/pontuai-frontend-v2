@@ -22,6 +22,8 @@ const useTenantsService = () => {
 
     const token = await logto.getAccessToken("https://pontuai-api.kontact.com.br")
 
+    console.log("TOKEN: ", token)
+
     if (!token) {
       throw new Error("Token não encontrado")
     }

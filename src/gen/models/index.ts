@@ -13,6 +13,7 @@ export * from './CustomerWithPointsResponse';
 export * from './GetCustomerDetailResponse';
 export * from './GetCustomerTransactionDetailResponse';
 export * from './GetTenant';
+export * from './PaginatedCustomerResponse';
 export * from './PointConfig';
 export * from './RedeemRewardDto';
 export * from './RewardResponse';

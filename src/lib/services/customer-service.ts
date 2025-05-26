@@ -8,7 +8,7 @@ import {
   ResponseError,
 } from "@/gen";
 import { useLogto } from "@logto/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -42,14 +42,17 @@ const useCustomerService = () => {
 export function useGetCustomers({
   xTenantId,
   query,
+  limit,
+  page
 }: CustomerControllerGetAllRequest) {
   const { getClient } = useCustomerService();
 
   return useQuery({
-    queryKey: ["customer", query],
+    placeholderData: keepPreviousData,
+    queryKey: ["customer", query, page, xTenantId],
     queryFn: async () => {
       const client = await getClient();
-      return client.customerControllerGetAll({ xTenantId, query });
+      return client.customerControllerGetAll({ xTenantId, query, limit, page });
     },
   });
 }

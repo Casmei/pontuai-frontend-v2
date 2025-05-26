@@ -34,6 +34,18 @@ paths:
           description: Optional search query
           schema:
             type: string
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            example: 10
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            example: 1
         - name: x-tenant-id
           in: header
           required: true
@@ -41,13 +53,11 @@ paths:
             type: string
       responses:
         '200':
-          description: The customer has been successfully loaded
+          description: The customer list has been successfully loaded
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CustomerWithPointsResponse'
+                $ref: '#/components/schemas/PaginatedCustomerResponse'
       summary: Get customers
       tags:
         - Customer
@@ -434,6 +444,31 @@ components:
       required:
         - customer
         - points
+    PaginatedCustomerResponse:
+      type: object
+      properties:
+        data:
+          description: List of customers for the current page
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerWithPointsResponse'
+        totalItems:
+          type: number
+          description: Total number of customers available (all pages)
+          example: 123
+        currentPage:
+          type: number
+          description: Current page number
+          example: 1
+        totalPages:
+          type: number
+          description: Total number of pages available
+          example: 13
+      required:
+        - data
+        - totalItems
+        - currentPage
+        - totalPages
     GetCustomerDetailResponse:
       type: object
       properties:
