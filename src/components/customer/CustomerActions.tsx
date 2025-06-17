@@ -1,20 +1,20 @@
-import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Gift, Plus } from "lucide-react";
 import {
     Dialog,
     DialogTrigger
 } from "@/components/ui/dialog";
-import { CreateRewardResponse, GetCustomerDetailResponse } from '@/gen';
 import { ProcessRewardModal } from '../dialogs/ProcessRewardDialog';
 import { AddTransactionDialog } from '../dialogs/AddTransactionDialog';
+import type { CreateRewardResponse, GetCustomerDetailResponse } from '@/gen';
 type CustomerActionsProps = {
     storeId: string,
-    customer: GetCustomerDetailResponse;
-    rewards: CreateRewardResponse[]
+    customer?: GetCustomerDetailResponse;
+    rewards?: CreateRewardResponse[];
+    points?: number;
 }
 
-export function CustomerActions({ storeId, customer, rewards }: CustomerActionsProps) {
+export function CustomerActions({ storeId, customer, rewards, points }: CustomerActionsProps) {
     const isCustomerLoaded = !!customer?.id;
 
     return (
@@ -52,6 +52,7 @@ export function CustomerActions({ storeId, customer, rewards }: CustomerActionsP
 
                 {rewards && isCustomerLoaded && (
                     <ProcessRewardModal
+                        points={points}
                         storeId={storeId}
                         customer={customer}
                         rewards={rewards}

@@ -28,28 +28,31 @@ paths:
     get:
       operationId: CustomerController_getAll
       parameters:
-        - name: query
-          required: false
-          in: query
-          description: Optional search query
+        - name: x-tenant-id
+          in: header
+          required: true
           schema:
             type: string
-        - name: limit
-          required: false
-          in: query
-          description: Items per page
-          schema:
-            example: 10
         - name: page
           required: false
           in: query
           description: Page number
           schema:
             example: 1
-        - name: x-tenant-id
-          in: header
-          required: true
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
           schema:
+            example: 5
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Text to filter by search
+          schema:
+            example: example search
             type: string
       responses:
         '200':
@@ -87,9 +90,9 @@ paths:
       summary: Get unique customer
       tags:
         - Customer
-  /customers/{customerId}/transactions:
+  /customers/{customerId}/balance-stats:
     get:
-      operationId: CustomerController_getCustomerTransactionDetail
+      operationId: CustomerController_getCustomerBalanceStats
       parameters:
         - name: customerId
           required: true
@@ -109,8 +112,55 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetCustomerTransactionDetailResponse'
+                $ref: '#/components/schemas/GetCustomerBalanceStatsResponse'
       summary: Get customer transaction details
+      tags:
+        - Customer
+  /customers/{customerId}/transactions:
+    get:
+      operationId: CustomerController_getCustomerTransactions
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          description: UUID that identifies the customer
+          schema:
+            example: bb66747b-cbc0-42fe-94d1-48436b275356
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            example: 5
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Text to filter by search
+          schema:
+            example: example search
+            type: string
+      responses:
+        '200':
+          description: The customer transactions has been successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerTransactionsResponse'
+      summary: Get customer transactions
       tags:
         - Customer
   /transaction:
@@ -163,7 +213,37 @@ paths:
           description: Bad request
         '401':
           description: Unauthorized
-      summary: Find all invoices
+      summary: Find all transactions
+      tags:
+        - Transaction
+  /transaction/{id}/redeem:
+    patch:
+      operationId: TransactionController_redeem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedeemRewardDto'
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Create a reward redemption transaction
       tags:
         - Transaction
   /tenant:
@@ -319,36 +399,6 @@ paths:
       summary: Update a reward
       tags:
         - Reward
-  /reward/{id}/redeem:
-    patch:
-      operationId: RewardController_redeem
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: x-tenant-id
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RedeemRewardDto'
-      responses:
-        '200':
-          description: ''
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-      summary: Redeem a reward
-      tags:
-        - Reward
 info:
   title: Pontuaí
   description: The Pontuaí API experience :)
@@ -488,10 +538,6 @@ components:
           type: string
           description: Email address of the member
           example: robert@example.com
-        points:
-          type: number
-          description: Total loyalty or reward points accumulated by the member
-          example: 45
         memberSince:
           format: date-time
           type: string
@@ -531,9 +577,32 @@ components:
         - id
         - name
         - phone
-        - points
         - memberSince
         - status
+    GetCustomerBalanceStatsResponse:
+      type: object
+      properties:
+        earnedPoints:
+          type: number
+          description: Total points earned by the customer through input transactions
+          example: 300
+        redeemedPoints:
+          type: number
+          description: Total points redeemed by the customer through output transactions
+          example: 150
+        expiredPoints:
+          type: number
+          description: Total points expired for the customer
+          example: 150
+        points:
+          type: number
+          description: Total loyalty or reward points accumulated by the member
+          example: 45
+      required:
+        - earnedPoints
+        - redeemedPoints
+        - expiredPoints
+        - points
     RewardResponse:
       type: object
       properties:
@@ -574,15 +643,17 @@ components:
           description: The number of points for the transaction
           example: 100
         value:
-          type: object
+          type: integer
           description: The monetary value associated (if any)
           example: 100
           nullable: true
         createdAt:
+          format: date-time
           type: string
           description: Date when the transaction was created
           example: '2025-04-24T21:20:04.629Z'
         updatedAt:
+          format: date-time
           type: string
           description: Date when the transaction was last updated
           example: '2025-04-24T21:20:04.629Z'
@@ -605,36 +676,31 @@ components:
         - updatedAt
         - customer
         - reward
-    GetCustomerTransactionDetailResponse:
+    CustomerTransactionsResponse:
       type: object
       properties:
-        transactions:
-          description: List of transactions performed by the customer
+        data:
+          description: List of transactions for the current page
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponse'
-        earnedPoints:
+        totalItems:
           type: number
-          description: Total points earned by the customer through input transactions
-          example: 300
-        redeemedPoints:
+          description: Total number of transactions available (all pages)
+          example: 123
+        currentPage:
           type: number
-          description: Total points redeemed by the customer through output transactions
-          example: 150
-        expiredPoints:
+          description: Current page number
+          example: 1
+        totalPages:
           type: number
-          description: Total points that have expired
-          example: 0
-        avaliablePoints:
-          type: number
-          description: Total points currently available for the customer
-          example: 150
+          description: Total number of pages available
+          example: 13
       required:
-        - transactions
-        - earnedPoints
-        - redeemedPoints
-        - expiredPoints
-        - avaliablePoints
+        - data
+        - totalItems
+        - currentPage
+        - totalPages
     AddPointsDto:
       type: object
       properties:
@@ -699,6 +765,15 @@ components:
         - rewardId
         - createdAt
         - updatedAt
+    RedeemRewardDto:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: Customer id
+          example: 6c76be07-b690-4903-93c8-395c30ddb69a
+      required:
+        - customerId
     CreateTenantDto:
       type: object
       properties:
@@ -944,14 +1019,5 @@ components:
         - name
         - description
         - pointValue
-    RedeemRewardDto:
-      type: object
-      properties:
-        customerId:
-          type: string
-          description: Customer id
-          example: 6c76be07-b690-4903-93c8-395c30ddb69a
-      required:
-        - customerId
 security:
   - bearer: []

@@ -54,22 +54,22 @@ export interface TransactionResponse {
     points: number;
     /**
      * The monetary value associated (if any)
-     * @type {object}
+     * @type {number}
      * @memberof TransactionResponse
      */
-    value: object | null;
+    value: number | null;
     /**
      * Date when the transaction was created
-     * @type {string}
+     * @type {Date}
      * @memberof TransactionResponse
      */
-    createdAt: string;
+    createdAt: Date;
     /**
      * Date when the transaction was last updated
-     * @type {string}
+     * @type {Date}
      * @memberof TransactionResponse
      */
-    updatedAt: string;
+    updatedAt: Date;
     /**
      * The customer associated with the transaction
      * @type {CustomerResponse}
@@ -113,8 +113,8 @@ export function TransactionResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'type': json['type'],
         'points': json['points'],
         'value': json['value'],
-        'createdAt': json['createdAt'],
-        'updatedAt': json['updatedAt'],
+        'createdAt': (new Date(json['createdAt'])),
+        'updatedAt': (new Date(json['updatedAt'])),
         'customer': CustomerResponseFromJSON(json['customer']),
         'reward': RewardResponseFromJSON(json['reward']),
     };
@@ -135,8 +135,8 @@ export function TransactionResponseToJSONTyped(value?: TransactionResponse | nul
         'type': value['type'],
         'points': value['points'],
         'value': value['value'],
-        'createdAt': value['createdAt'],
-        'updatedAt': value['updatedAt'],
+        'createdAt': ((value['createdAt']).toISOString()),
+        'updatedAt': ((value['updatedAt']).toISOString()),
         'customer': CustomerResponseToJSON(value['customer']),
         'reward': RewardResponseToJSON(value['reward']),
     };

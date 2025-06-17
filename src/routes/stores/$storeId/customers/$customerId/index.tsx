@@ -1,74 +1,65 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { ChevronLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
+  useGetCustomerBalanceStats,
   useGetCustomerDetail,
-  useGetCustomerTransactionDetail
-} from "@/lib/services/customer-service";
-import { useGetRewards } from "@/lib/services/reward-service";
+  useGetCustomerTransactions,
+} from "@/lib/services/customer-service"
 
-// import { CustomerActions } from "@/components/customer/CustomerActions";
-import { CustomerDetails } from "@/components/customer/CustomerDetails";
-import { AvailableRewards } from "@/components/customer/AvailableRewards";
+import { CustomerDetails } from "@/components/customer/CustomerDetails"
 
-
-import {
-  CustomerDetailsSkeleton,
-  CustomerPointsSkeleton,
-  RecentActivitySkeleton,
-  RewardListSkeleton
-} from "@/components/customer-detail";
-import { RecentActivity } from "@/components/customer/RecentActivity";
-import { CustomerHeader } from "@/components/customer/CustomerHeader";
-import { CustomerPoints } from "@/components/customer/CustomerPoints";
-import { CustomerActions } from "@/components/customer/CustomerActions";
+import { CustomerHeader } from "@/components/customer/CustomerHeader"
+import { RecentActivity } from "@/components/customer/RecentActivity"
+import { CustomerPoints } from "@/components/customer/CustomerPoints"
+import { CustomerActions } from "@/components/customer/CustomerActions"
+import { useGetRewards } from "@/lib/services/reward-service"
 
 export const Route = createFileRoute("/stores/$storeId/customers/$customerId/")({
   component: CustomerDetailPage,
-});
+})
 
 function CustomerDetailPage() {
-  const { storeId, customerId } = Route.useParams();
+  const { storeId, customerId } = Route.useParams()
 
-  // Queries com react-query otimizadas
   const {
     data: customer,
-    isError: customerError,
-    isLoading: customerLoading
+    isError: _,
+    isLoading: customerLoading,
   } = useGetCustomerDetail({
     xTenantId: storeId,
     customerId,
-  });
+  })
 
   const {
-    data: customerTransaction,
-    isError: transactionError,
-    isLoading: transactionLoading
-  } = useGetCustomerTransactionDetail(
+    data: customerTransactions,
+    isError: customerTransactionsError,
+    isLoading: customerTransactionsLoading,
+  } = useGetCustomerTransactions(
+    {
+      limit: 5,
+      xTenantId: storeId,
+      customerId,
+    },
+    {
+      staleTime: 2 * 60 * 1000,
+    },
+  )
+
+  const {
+    data: customerBalanceStats,
+    isLoading: customerBalanceStatsLoading,
+  } = useGetCustomerBalanceStats(
     {
       xTenantId: storeId,
       customerId,
     },
     {
-      enabled: !!customer,
-      staleTime: 2 * 60 * 1000
-    }
-  );
-
-  const {
-    data: rewards,
-    isError: rewardsError,
-    isLoading: rewardsLoading
-  } = useGetRewards(
-    {
-      xTenantId: storeId,
-
+      staleTime: 2 * 60 * 1000,
     },
-    {
-      enabled: !!customer,
-      staleTime: 10 * 60 * 1000,
-    }
-  );
+  )
+
+  const { data: rewards } = useGetRewards({ xTenantId: storeId })
 
   return (
     <div className="space-y-6">
@@ -84,61 +75,29 @@ function CustomerDetailPage() {
       <div className="bg-white border rounded-lg shadow-sm">
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            <CustomerHeader
-              customer={customer!}
-              isLoading={customerLoading}
-            />
+            <CustomerHeader customer={customer} isLoading={customerLoading} />
 
-            <CustomerActions
-              storeId={storeId}
-              customer={customer!}
-              rewards={rewards!}
-            />
+            <CustomerActions customer={customer} rewards={rewards} storeId={storeId} points={customerBalanceStats?.points} />
           </div>
 
           <div className="mt-8">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-              {customerLoading && customer ? (
-                <CustomerDetailsSkeleton />
-              ) : (
-                <CustomerDetails
-                  customer={customer!}
-                  isLoading={false}
-                />
-              )}
+              <CustomerDetails customer={customer} isLoading={customerLoading} />
 
-              {customerLoading || transactionLoading ? (
-                <CustomerPointsSkeleton />
-              ) : (
-                <CustomerPoints
-                  customer={customer!}
-                  customerTransaction={customerTransaction!}
-                  isLoading={false}
-                />
-              )}
+              <CustomerPoints
+                balanceStats={customerBalanceStats}
+                isLoading={customerBalanceStatsLoading}
+              />
 
-              {customerLoading || (transactionLoading && customerTransaction) ? (
-                <RecentActivitySkeleton />
-              ) : (
-                <RecentActivity
-                  customerTransaction={customerTransaction!}
-                  isLoading={false}
-                />
-              )}
+              <RecentActivity
+                customerTransactions={customerTransactions}
+                isError={customerTransactionsError}
+                isLoading={customerTransactionsLoading}
+              />
             </div>
           </div>
         </div>
       </div>
-
-      {customerLoading || rewardsLoading ? (
-        <RewardListSkeleton />
-      ) : customer && rewards && (
-        <AvailableRewards
-          customer={customer}
-          rewards={rewards!}
-          isLoading={false}
-        />
-      )}
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { GetCustomerDetailResponse } from "@/gen";
+import type { GetCustomerDetailResponse } from "@/gen";
 import {
     DialogContent,
     DialogFooter,

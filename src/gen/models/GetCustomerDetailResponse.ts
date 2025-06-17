@@ -44,12 +44,6 @@ export interface GetCustomerDetailResponse {
      */
     email?: string;
     /**
-     * Total loyalty or reward points accumulated by the member
-     * @type {number}
-     * @memberof GetCustomerDetailResponse
-     */
-    points: number;
-    /**
      * Date the member joined, in ISO format
      * @type {Date}
      * @memberof GetCustomerDetailResponse
@@ -100,7 +94,6 @@ export function instanceOfGetCustomerDetailResponse(value: object): value is Get
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('phone' in value) || value['phone'] === undefined) return false;
-    if (!('points' in value) || value['points'] === undefined) return false;
     if (!('memberSince' in value) || value['memberSince'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     return true;
@@ -120,7 +113,6 @@ export function GetCustomerDetailResponseFromJSONTyped(json: any, ignoreDiscrimi
         'name': json['name'],
         'phone': json['phone'],
         'email': json['email'] == null ? undefined : json['email'],
-        'points': json['points'],
         'memberSince': (new Date(json['memberSince'])),
         'status': json['status'],
         'tier': json['tier'] == null ? undefined : json['tier'],
@@ -146,7 +138,6 @@ export function GetCustomerDetailResponseToJSONTyped(value?: GetCustomerDetailRe
         'name': value['name'],
         'phone': value['phone'],
         'email': value['email'],
-        'points': value['points'],
         'memberSince': ((value['memberSince']).toISOString()),
         'status': value['status'],
         'tier': value['tier'],

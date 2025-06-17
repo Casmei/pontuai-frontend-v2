@@ -17,7 +17,6 @@ import * as runtime from '../runtime';
 import type {
   CreateRewardDto,
   CreateRewardResponse,
-  RedeemRewardDto,
   UpdateRewardDto,
 } from '../models/index';
 import {
@@ -25,8 +24,6 @@ import {
     CreateRewardDtoToJSON,
     CreateRewardResponseFromJSON,
     CreateRewardResponseToJSON,
-    RedeemRewardDtoFromJSON,
-    RedeemRewardDtoToJSON,
     UpdateRewardDtoFromJSON,
     UpdateRewardDtoToJSON,
 } from '../models/index';
@@ -38,12 +35,6 @@ export interface RewardControllerAllRequest {
 export interface RewardControllerCreateRequest {
     xTenantId: string;
     createRewardDto: CreateRewardDto;
-}
-
-export interface RewardControllerRedeemRequest {
-    id: string;
-    xTenantId: string;
-    redeemRewardDto: RedeemRewardDto;
 }
 
 export interface RewardControllerUpdateRequest {
@@ -155,67 +146,6 @@ export class RewardApi extends runtime.BaseAPI {
     async rewardControllerCreate(requestParameters: RewardControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateRewardResponse> {
         const response = await this.rewardControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
-    }
-
-    /**
-     * Redeem a reward
-     */
-    async rewardControllerRedeemRaw(requestParameters: RewardControllerRedeemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling rewardControllerRedeem().'
-            );
-        }
-
-        if (requestParameters['xTenantId'] == null) {
-            throw new runtime.RequiredError(
-                'xTenantId',
-                'Required parameter "xTenantId" was null or undefined when calling rewardControllerRedeem().'
-            );
-        }
-
-        if (requestParameters['redeemRewardDto'] == null) {
-            throw new runtime.RequiredError(
-                'redeemRewardDto',
-                'Required parameter "redeemRewardDto" was null or undefined when calling rewardControllerRedeem().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters['xTenantId'] != null) {
-            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/reward/{id}/redeem`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: RedeemRewardDtoToJSON(requestParameters['redeemRewardDto']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Redeem a reward
-     */
-    async rewardControllerRedeem(requestParameters: RewardControllerRedeemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.rewardControllerRedeemRaw(requestParameters, initOverrides);
     }
 
     /**

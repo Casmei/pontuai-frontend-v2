@@ -13,9 +13,10 @@ models/CreateRewardResponse.ts
 models/CreateTenantDto.ts
 models/CreateTenantResponse.ts
 models/CustomerResponse.ts
+models/CustomerTransactionsResponse.ts
 models/CustomerWithPointsResponse.ts
+models/GetCustomerBalanceStatsResponse.ts
 models/GetCustomerDetailResponse.ts
-models/GetCustomerTransactionDetailResponse.ts
 models/GetTenant.ts
 models/PaginatedCustomerResponse.ts
 models/PointConfig.ts

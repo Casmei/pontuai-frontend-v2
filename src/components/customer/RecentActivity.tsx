@@ -1,24 +1,49 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Gift } from "lucide-react";
 import { RecentActivitySkeleton } from "@/components/customer-detail";
-import { GetCustomerTransactionDetailResponse, TransactionResponse } from "@/gen";
+import type {
+    CustomerTransactionsResponse,
+    TransactionResponse,
+} from "@/gen";
+import { formatDate } from "@/lib/utils";
 
 type RecentActivityProps = {
-    customerTransaction: GetCustomerTransactionDetailResponse;
+    customerTransactions?: CustomerTransactionsResponse;
     isLoading: boolean;
+    isError: boolean;
 };
 
 export function RecentActivity({
-    customerTransaction,
+    customerTransactions,
     isLoading,
+    isError
 }: RecentActivityProps) {
-    if (isLoading) {
+
+    if (isLoading && !customerTransactions?.data) {
         return <RecentActivitySkeleton />;
     }
 
-    const hasTransactions = customerTransaction?.transactions?.length > 0;
+    if (isError) {
+        return <p className="text-sm text-red-500 text-center">Erro ao carregar atividades.</p>;
+    }
+
+    const transactions = customerTransactions?.data ?? [];
+    const hasTransactions = transactions.length > 0;
 
     return (
         <Card className="md:col-span-3">
@@ -26,19 +51,17 @@ export function RecentActivity({
                 <CardTitle className="text-lg">Atividades Recentes</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="space-y-4">
-                    {!hasTransactions ? (
-                        <p className="text-sm text-muted-foreground text-center">
-                            Nenhuma transação encontrada para este cliente.
-                        </p>
-                    ) : (
-                        <TransactionList transactions={customerTransaction.transactions} />
-                    )}
-                </div>
+                {!hasTransactions ? (
+                    <p className="text-sm text-muted-foreground text-center">
+                        Nenhuma transação encontrada para este cliente.
+                    </p>
+                ) : (
+                    <TransactionTable transactions={transactions} />
+                )}
 
                 {hasTransactions && (
-                    <Button variant="ghost" className="w-full text-sm">
-                        Ver todas as transações
+                    <Button variant="outline" className="w-full text-sm">
+                        Ver todas as {customerTransactions?.totalItems ?? ""} transações
                     </Button>
                 )}
             </CardContent>
@@ -46,53 +69,70 @@ export function RecentActivity({
     );
 }
 
-const TransactionList = React.memo(({ transactions = [] }: { transactions: TransactionResponse[] }) => {
-    return (
-        <>
-            {transactions.map((transaction) => (
-                <TransactionItem key={transaction.id} transaction={transaction} />
-            ))}
-        </>
-    );
-});
+const TransactionTable = React.memo(
+    ({ transactions }: { transactions: TransactionResponse[] }) => {
+        return (
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-10" />
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Data</TableHead>
+                        <TableHead>Recompensa</TableHead>
+                        <TableHead className="text-right">Pontos</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {transactions.map((transaction) => (
+                        <TransactionRow key={transaction.id} transaction={transaction} />
+                    ))}
+                </TableBody>
+            </Table>
+        );
+    }
+);
 
-TransactionList.displayName = "TransactionList";
+TransactionTable.displayName = "TransactionTable";
 
-const TransactionItem = React.memo(({ transaction }: { transaction: TransactionResponse }) => {
-    const isInput = transaction.type === "input";
+const TransactionRow = React.memo(
+    ({ transaction }: { transaction: TransactionResponse }) => {
+        const isInput = transaction.type === "input";
 
-    return (
-        <div className="flex items-start gap-3">
-            <div
-                className={`mt-0.5 p-1.5 rounded-full ${isInput
-                    ? "bg-green-100 text-green-700"
-                    : "bg-amber-100 text-amber-700"
-                    }`}
-            >
-                {isInput ? (
-                    <ShoppingBag className="h-3 w-3" />
-                ) : (
-                    <Gift className="h-3 w-3" />
-                )}
-            </div>
-            <div className="flex-1">
-                <div className="flex justify-between">
-                    <p className="text-sm font-medium">
-                        {isInput ? "Compra" : "Resgate"}
-                    </p>
-                    <p
-                        className={`text-sm font-medium ${transaction.points > 0 ? "text-green-600" : "text-amber-600"
+        return (
+            <TableRow>
+                <TableCell>
+                    <div
+                        className={`p-1.5 rounded-full ${isInput ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
                             }`}
                     >
-                        {transaction.points} pts
-                    </p>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                    {transaction.reward?.name || ""}
-                </p>
-            </div>
-        </div>
-    );
-});
+                        {isInput ? (
+                            <ShoppingBag className="h-3 w-3" />
+                        ) : (
+                            <Gift className="h-3 w-3" />
+                        )}
+                    </div>
+                </TableCell>
+                <TableCell>
+                    <span className="text-sm font-medium">
+                        {isInput ? "Compra" : "Resgate"}
+                    </span>
+                </TableCell>
+                <TableCell>
+                    <span className="text-sm text-muted-foreground">
+                        {formatDate(transaction.createdAt)}
+                    </span>
+                </TableCell>
+                <TableCell>
+                    <span className="text-sm text-muted-foreground">
+                        {transaction.reward?.name || "-"}
+                    </span>
+                </TableCell>
+                <TableCell className={`text-right font-medium ${isInput ? "text-green-600" : "text-amber-600"}`}>
+                    {transaction.points} pts
+                </TableCell>
+            </TableRow>
+        );
+    }
+);
 
-TransactionItem.displayName = "TransactionItem";
+TransactionRow.displayName = "TransactionRow";

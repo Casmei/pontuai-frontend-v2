@@ -46,17 +46,17 @@ export interface GetCustomerTransactionDetailResponse {
      */
     redeemedPoints: number;
     /**
-     * Total points that have expired
+     * Total points expired for the customer
      * @type {number}
      * @memberof GetCustomerTransactionDetailResponse
      */
     expiredPoints: number;
     /**
-     * Total points currently available for the customer
+     * Total transactions
      * @type {number}
      * @memberof GetCustomerTransactionDetailResponse
      */
-    avaliablePoints: number;
+    total: number;
 }
 
 /**
@@ -67,7 +67,7 @@ export function instanceOfGetCustomerTransactionDetailResponse(value: object): v
     if (!('earnedPoints' in value) || value['earnedPoints'] === undefined) return false;
     if (!('redeemedPoints' in value) || value['redeemedPoints'] === undefined) return false;
     if (!('expiredPoints' in value) || value['expiredPoints'] === undefined) return false;
-    if (!('avaliablePoints' in value) || value['avaliablePoints'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -85,7 +85,7 @@ export function GetCustomerTransactionDetailResponseFromJSONTyped(json: any, ign
         'earnedPoints': json['earnedPoints'],
         'redeemedPoints': json['redeemedPoints'],
         'expiredPoints': json['expiredPoints'],
-        'avaliablePoints': json['avaliablePoints'],
+        'total': json['total'],
     };
 }
 
@@ -104,7 +104,7 @@ export function GetCustomerTransactionDetailResponseToJSONTyped(value?: GetCusto
         'earnedPoints': value['earnedPoints'],
         'redeemedPoints': value['redeemedPoints'],
         'expiredPoints': value['expiredPoints'],
-        'avaliablePoints': value['avaliablePoints'],
+        'total': value['total'],
     };
 }
 

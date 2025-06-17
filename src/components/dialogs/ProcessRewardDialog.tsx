@@ -1,4 +1,4 @@
-import { CreateRewardResponse, GetCustomerDetailResponse } from "@/gen";
+import type { CreateRewardResponse, GetCustomerDetailResponse } from "@/gen";
 import {
     DialogContent,
     DialogFooter,
@@ -25,14 +25,15 @@ import {
     FormLabel,
     FormMessage,
 } from "../ui/form";
-import { useRedeemReward } from "@/lib/services/reward-service";
 import { useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useRedeemReward } from "@/lib/services/transaction-service";
 
 type ProcessRewardModalProps = {
     storeId: string;
-    customer: GetCustomerDetailResponse;
-    rewards: CreateRewardResponse[];
+    customer?: GetCustomerDetailResponse;
+    rewards?: CreateRewardResponse[];
+    points?: number
 };
 
 const redeemSchema = z.object({
@@ -44,13 +45,14 @@ export const ProcessRewardModal: React.FC<ProcessRewardModalProps> = ({
     storeId,
     customer,
     rewards,
+    points
 }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof redeemSchema>>({
         resolver: zodResolver(redeemSchema),
         defaultValues: {
-            customerId: customer.id,
+            customerId: customer?.id || "",
             rewardId: "",
         },
     });
@@ -65,7 +67,7 @@ export const ProcessRewardModal: React.FC<ProcessRewardModalProps> = ({
                 id: values.rewardId,
                 redeemRewardDto: { customerId: values.customerId },
             });
-            form.reset({ rewardId: "", customerId: customer.id });
+            form.reset({ rewardId: "", customerId: customer?.id });
         } catch (error) {
             console.error("Erro ao resgatar prêmio:", error);
         } finally {
@@ -76,7 +78,7 @@ export const ProcessRewardModal: React.FC<ProcessRewardModalProps> = ({
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Processar resgate para {customer.name}</DialogTitle>
+                <DialogTitle>Processar resgate para {customer?.name}</DialogTitle>
             </DialogHeader>
 
             <Form {...form}>
@@ -98,14 +100,14 @@ export const ProcessRewardModal: React.FC<ProcessRewardModalProps> = ({
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {rewards.map((reward) => (
+                                        {rewards?.map((reward) => (
                                             <SelectItem
                                                 key={reward.id}
                                                 value={reward.id.toString()}
-                                                disabled={reward.pointValue > customer.points}
+                                                disabled={reward.pointValue > points!}
                                             >
                                                 {reward.name} ({reward.pointValue} pts)
-                                                {reward.pointValue > customer.points
+                                                {reward.pointValue > points!
                                                     ? " - Pts insuficientes"
                                                     : ""}
                                             </SelectItem>

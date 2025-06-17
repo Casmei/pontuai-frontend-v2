@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   AddPointsDto,
   AddPointsResponse,
+  RedeemRewardDto,
   TransactionResponse,
 } from '../models/index';
 import {
@@ -24,6 +25,8 @@ import {
     AddPointsDtoToJSON,
     AddPointsResponseFromJSON,
     AddPointsResponseToJSON,
+    RedeemRewardDtoFromJSON,
+    RedeemRewardDtoToJSON,
     TransactionResponseFromJSON,
     TransactionResponseToJSON,
 } from '../models/index';
@@ -35,6 +38,12 @@ export interface TransactionControllerCreateRequest {
 
 export interface TransactionControllerGetAllRequest {
     xTenantId: string;
+}
+
+export interface TransactionControllerRedeemRequest {
+    id: string;
+    xTenantId: string;
+    redeemRewardDto: RedeemRewardDto;
 }
 
 /**
@@ -98,7 +107,7 @@ export class TransactionApi extends runtime.BaseAPI {
     }
 
     /**
-     * Find all invoices
+     * Find all transactions
      */
     async transactionControllerGetAllRaw(requestParameters: TransactionControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TransactionResponse>>> {
         if (requestParameters['xTenantId'] == null) {
@@ -135,11 +144,72 @@ export class TransactionApi extends runtime.BaseAPI {
     }
 
     /**
-     * Find all invoices
+     * Find all transactions
      */
     async transactionControllerGetAll(requestParameters: TransactionControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TransactionResponse>> {
         const response = await this.transactionControllerGetAllRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Create a reward redemption transaction
+     */
+    async transactionControllerRedeemRaw(requestParameters: TransactionControllerRedeemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling transactionControllerRedeem().'
+            );
+        }
+
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling transactionControllerRedeem().'
+            );
+        }
+
+        if (requestParameters['redeemRewardDto'] == null) {
+            throw new runtime.RequiredError(
+                'redeemRewardDto',
+                'Required parameter "redeemRewardDto" was null or undefined when calling transactionControllerRedeem().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/transaction/{id}/redeem`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RedeemRewardDtoToJSON(requestParameters['redeemRewardDto']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Create a reward redemption transaction
+     */
+    async transactionControllerRedeem(requestParameters: TransactionControllerRedeemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.transactionControllerRedeemRaw(requestParameters, initOverrides);
     }
 
 }

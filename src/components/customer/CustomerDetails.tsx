@@ -1,11 +1,10 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CustomerDetailsSkeleton } from "@/components/customer-detail";
-import { GetCustomerDetailResponse } from '@/gen';
+import type { GetCustomerDetailResponse } from '@/gen';
 
 type CustomerDetailsProps = {
-    customer: GetCustomerDetailResponse;
+    customer?: GetCustomerDetailResponse;
     isLoading: boolean;
 }
 
@@ -47,14 +46,6 @@ export function CustomerDetails({ customer, isLoading }: CustomerDetailsProps) {
                         label="Endereço"
                         value={customer?.address || "Não informado"}
                     />
-                    <div>
-                        <p className="text-sm text-muted-foreground">
-                            Preferências
-                        </p>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                            <Badge variant="outline">Em desenvolvimento 😜</Badge>
-                        </div>
-                    </div>
                 </div>
             </CardContent>
         </Card>
@@ -62,7 +53,7 @@ export function CustomerDetails({ customer, isLoading }: CustomerDetailsProps) {
 }
 
 // Componente reutilizável para cada item de detalhe
-const DetailItem = React.memo(({ label, value }: { label: string, value: any }) => {
+const DetailItem = React.memo(({ label, value }: { label: string, value: string }) => {
     return (
         <div>
             <p className="text-sm text-muted-foreground">{label}</p>
