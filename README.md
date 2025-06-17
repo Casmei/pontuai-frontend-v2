@@ -1,54 +1,38 @@
-# React + TypeScript + Vite
+# Pontuaí - Fidelidade que Transforma
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **Pontuaí** é um sistema de fidelidade intuitivo que ajuda pequenos negócios a criarem programas de recompensa personalizados. Transforme cada compra dos seus clientes em oportunidades de fidelização com uma ferramenta simples mas poderosa.
 
-Currently, two official plugins are available:
+## 💡 Por que escolher o Pontuaí?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Em um mercado onde cada cliente vale ouro, o **Pontuaí** oferece:
 
-## Expanding the ESLint configuration
+- 🎯 **Personalização Total**: Defina suas próprias regras - a cada R$1 gasto, seu cliente ganha X pontos
+- 🤝 **Relacionamento Direto**: Conecte-se com seus clientes sem intermediários
+- 📈 **Fidelização Progressiva**: Transforme compradores ocasionais em clientes fiéis
+- 💰 **Baixo Custo**: Solução acessível para pequenos negócios
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Como Funciona?
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Você configura** as regras de pontos (ex: 2 pontos por R$1 gasto)
+2. **Seus clientes acumulam** pontos a cada compra
+3. **Você oferece recompensas** que fazem sentido para seu negócio
+4. **Seus clientes resgatam** e voltam mais vezes!
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📱 Funcionalidades Principais
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- ⚙️ Configuração flexível de programas de pontos
+- 👥 Cadastro simples de clientes
+- 🏆 Criação de prêmios e recompensas
+- 👩💻 Painel de acompanhamento para você e sua equipe
+- 📊 Relatórios básicos de desempenho
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 📞 Vamos conversar?
+
+Quer saber mais ou dar sugestões para o projeto?
+
+- Email: casmei@protonmail.com
+- WhatsApp: (33) 99916-6432
+
+---
+
+**Pontuaí** - Fidelização descomplicada para resultados reais. Seu negócio merece clientes fiéis! ❤️
