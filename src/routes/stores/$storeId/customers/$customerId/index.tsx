@@ -14,6 +14,7 @@ import { RecentActivity } from "@/components/customer/RecentActivity"
 import { CustomerPoints } from "@/components/customer/CustomerPoints"
 import { CustomerActions } from "@/components/customer/CustomerActions"
 import { useGetRewards } from "@/lib/services/reward-service"
+import { AvailableRewards } from "@/components/customer/AvailableRewards"
 
 export const Route = createFileRoute("/stores/$storeId/customers/$customerId/")({
   component: CustomerDetailPage,
@@ -98,6 +99,13 @@ function CustomerDetailPage() {
           </div>
         </div>
       </div>
+
+      <AvailableRewards
+        customer={customer}
+        points={customerBalanceStats?.points}
+        rewards={rewards!}
+        isLoading={false}
+      />
     </div>
   )
 }

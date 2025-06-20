@@ -4,16 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { LockIcon } from "lucide-react";
 import { RewardListSkeleton } from "@/components/customer-detail";
-import { CreateRewardResponse, GetCustomerDetailResponse } from '@/gen';
+import type { CreateRewardResponse, GetCustomerDetailResponse } from '@/gen';
 
 type AvailableRewardsProps = {
-    customer: GetCustomerDetailResponse;
+    customer?: GetCustomerDetailResponse;
+    points?: number,
     rewards: CreateRewardResponse[]
     isLoading: boolean;
 }
 
 
-export function AvailableRewards({ customer, rewards, isLoading }: AvailableRewardsProps) {
+export function AvailableRewards({ customer, points, rewards, isLoading }: AvailableRewardsProps) {
     if (isLoading) {
         return <RewardListSkeleton />;
     }
@@ -40,7 +41,7 @@ export function AvailableRewards({ customer, rewards, isLoading }: AvailableRewa
                         <RewardCard
                             key={reward.id}
                             reward={reward}
-                            customerPoints={customer?.points || 0}
+                            customerPoints={points || 0}
                         />
                     ))}
                 </div>
