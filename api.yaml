@@ -480,28 +480,14 @@ components:
         - tenant_id
         - name
         - phone
-    CustomerWithPointsResponse:
-      type: object
-      properties:
-        customer:
-          description: Customer details
-          allOf:
-            - $ref: '#/components/schemas/CustomerResponse'
-        points:
-          type: number
-          description: Total points accumulated by the customer
-          example: 100
-      required:
-        - customer
-        - points
     PaginatedCustomerResponse:
       type: object
       properties:
-        data:
+        customers:
           description: List of customers for the current page
           type: array
           items:
-            $ref: '#/components/schemas/CustomerWithPointsResponse'
+            $ref: '#/components/schemas/CustomerResponse'
         totalItems:
           type: number
           description: Total number of customers available (all pages)
@@ -515,7 +501,7 @@ components:
           description: Total number of pages available
           example: 13
       required:
-        - data
+        - customers
         - totalItems
         - currentPage
         - totalPages

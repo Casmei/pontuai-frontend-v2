@@ -9,17 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { Edit, Trash } from "lucide-react"
 import { CustomerTableSkeleton } from "./customer-table-skeleton"
 import { Link } from "@tanstack/react-router"
+import { capitalizeName } from "@/lib/utils"
 
 interface CustomerTableProps {
   storeId: string
-  query: string
+  search: string
 }
 
-export function CustomerTable({ storeId, query }: CustomerTableProps) {
+export function CustomerTable({ storeId, search }: CustomerTableProps) {
   const [page, setPage] = useState(1)
   const limit = 10
 
@@ -27,9 +27,9 @@ export function CustomerTable({ storeId, query }: CustomerTableProps) {
     data: response,
     isError: err,
     isLoading,
-  } = useGetCustomers({ xTenantId: storeId, query, page, limit })
+  } = useGetCustomers({ xTenantId: storeId, search, page, limit })
 
-  const customers = response?.data ?? []
+  const customers = response?.customers ?? []
   const totalPages = response?.totalPages ?? 1
 
   if (err) {
@@ -58,19 +58,16 @@ export function CustomerTable({ storeId, query }: CustomerTableProps) {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Telefone</TableHead>
-            <TableHead>Pontos</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading && <CustomerTableSkeleton />}
-          {customers.map(({ customer, points }) => (
+          {customers.map((customer) => (
             <TableRow key={customer.id}>
-              <TableCell className="font-medium">{customer.name}</TableCell>
+              <TableCell className="font-medium">{capitalizeName(customer.name)}</TableCell>
               <TableCell>{customer.phone}</TableCell>
-              <TableCell>
-                <Badge variant="outline">{points} pts</Badge>
-              </TableCell>
+
               <TableCell>
                 <div className="flex gap-2">
                   <Link

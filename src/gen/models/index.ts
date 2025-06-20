@@ -10,7 +10,6 @@ export * from './CreateTenantDto';
 export * from './CreateTenantResponse';
 export * from './CustomerResponse';
 export * from './CustomerTransactionsResponse';
-export * from './CustomerWithPointsResponse';
 export * from './GetCustomerBalanceStatsResponse';
 export * from './GetCustomerDetailResponse';
 export * from './GetTenant';

@@ -38,7 +38,7 @@ function RouteComponent() {
                             <CustomerForm storeId={storeId} />
                         </Dialog>
                     </div>
-                    <CustomerTable storeId={storeId} query={q || ""} />
+                    <CustomerTable storeId={storeId} search={q || ""} />
                 </div>
             </div>
         </div>

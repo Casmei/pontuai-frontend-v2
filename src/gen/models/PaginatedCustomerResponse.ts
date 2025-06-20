@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { CustomerWithPointsResponse } from './CustomerWithPointsResponse';
+import type { CustomerResponse } from './CustomerResponse';
 import {
-    CustomerWithPointsResponseFromJSON,
-    CustomerWithPointsResponseFromJSONTyped,
-    CustomerWithPointsResponseToJSON,
-    CustomerWithPointsResponseToJSONTyped,
-} from './CustomerWithPointsResponse';
+    CustomerResponseFromJSON,
+    CustomerResponseFromJSONTyped,
+    CustomerResponseToJSON,
+    CustomerResponseToJSONTyped,
+} from './CustomerResponse';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface PaginatedCustomerResponse {
     /**
      * List of customers for the current page
-     * @type {Array<CustomerWithPointsResponse>}
+     * @type {Array<CustomerResponse>}
      * @memberof PaginatedCustomerResponse
      */
-    data: Array<CustomerWithPointsResponse>;
+    customers: Array<CustomerResponse>;
     /**
      * Total number of customers available (all pages)
      * @type {number}
@@ -57,7 +57,7 @@ export interface PaginatedCustomerResponse {
  * Check if a given object implements the PaginatedCustomerResponse interface.
  */
 export function instanceOfPaginatedCustomerResponse(value: object): value is PaginatedCustomerResponse {
-    if (!('data' in value) || value['data'] === undefined) return false;
+    if (!('customers' in value) || value['customers'] === undefined) return false;
     if (!('totalItems' in value) || value['totalItems'] === undefined) return false;
     if (!('currentPage' in value) || value['currentPage'] === undefined) return false;
     if (!('totalPages' in value) || value['totalPages'] === undefined) return false;
@@ -74,7 +74,7 @@ export function PaginatedCustomerResponseFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'data': ((json['data'] as Array<any>).map(CustomerWithPointsResponseFromJSON)),
+        'customers': ((json['customers'] as Array<any>).map(CustomerResponseFromJSON)),
         'totalItems': json['totalItems'],
         'currentPage': json['currentPage'],
         'totalPages': json['totalPages'],
@@ -92,7 +92,7 @@ export function PaginatedCustomerResponseToJSONTyped(value?: PaginatedCustomerRe
 
     return {
         
-        'data': ((value['data'] as Array<any>).map(CustomerWithPointsResponseToJSON)),
+        'customers': ((value['customers'] as Array<any>).map(CustomerResponseToJSON)),
         'totalItems': value['totalItems'],
         'currentPage': value['currentPage'],
         'totalPages': value['totalPages'],

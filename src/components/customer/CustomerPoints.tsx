@@ -57,13 +57,6 @@ export function CustomerPoints({ balanceStats, isLoading }: CustomerPointsProps)
                         </div>
                     </div>
                 </div>
-
-                <div className="pt-2">
-                    <Button disabled className="w-full">
-                        <BadgePercent className="mr-2 h-4 w-4" />
-                        Gerenciar Pontos
-                    </Button>
-                </div>
             </CardContent>
         </Card>
     );

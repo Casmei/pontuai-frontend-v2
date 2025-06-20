@@ -23,3 +23,18 @@ export function formatCurrency(value: number): string {
 export function generateId(): string {
   return Math.random().toString(36).substring(2, 9)
 }
+
+export function capitalizeName(name: string): string {
+  const lowerWords = ["de", "da", "das", "do", "dos", "e"]
+
+  return name
+    .toLowerCase()
+    .split(" ")
+    .map((word, index) => {
+      if (lowerWords.includes(word) && index !== 0) {
+        return word
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(" ")
+}
