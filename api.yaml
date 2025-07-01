@@ -163,6 +163,25 @@ paths:
       summary: Get customer transactions
       tags:
         - Customer
+  /customers/stats:
+    get:
+      operationId: CustomerController_getCustomerStats
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The transaction customer stats has been successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerStatsResponse'
+      summary: Get customer stats
+      tags:
+        - Customer
   /transaction:
     post:
       operationId: TransactionController_create
@@ -695,6 +714,15 @@ components:
         - totalItems
         - currentPage
         - totalPages
+    CustomerStatsResponse:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Total of customers
+          example: 13
+      required:
+        - total
     AddPointsDto:
       type: object
       properties:

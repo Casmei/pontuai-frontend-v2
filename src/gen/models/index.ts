@@ -9,6 +9,7 @@ export * from './CreateRewardResponse';
 export * from './CreateTenantDto';
 export * from './CreateTenantResponse';
 export * from './CustomerResponse';
+export * from './CustomerStatsResponse';
 export * from './CustomerTransactionsResponse';
 export * from './GetCustomerBalanceStatsResponse';
 export * from './GetCustomerDetailResponse';

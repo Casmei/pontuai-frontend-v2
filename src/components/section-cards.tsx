@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import type { GetTransactionsStatsResponse } from "@/gen";
+import type { CustomerStatsResponse, GetTransactionsStatsResponse } from "@/gen";
 import { BadgeCheck, Gift, TrendingDown, TrendingUp } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 
 type SectionCardsProps = {
   isLoading: boolean
   transactionStats?: GetTransactionsStatsResponse
+  customerStats?: CustomerStatsResponse
 }
 
 export function SectionCards(props: SectionCardsProps) {
@@ -19,7 +20,7 @@ export function SectionCards(props: SectionCardsProps) {
         <CardHeader>
           <CardDescription>Total de clientes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4382
+            {props.customerStats?.total}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -30,10 +31,10 @@ export function SectionCards(props: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <TrendingUp className="size-4" />
+            Base de clientes em crescimento <TrendingUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            Total acumulado de clientes cadastrados na plataforma.
           </div>
         </CardFooter>
       </Card>

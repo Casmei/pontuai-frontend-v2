@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   CreateCustomerDto,
   CreateCustomerResponse,
+  CustomerStatsResponse,
   CustomerTransactionsResponse,
   GetCustomerBalanceStatsResponse,
   GetCustomerDetailResponse,
@@ -27,6 +28,8 @@ import {
     CreateCustomerDtoToJSON,
     CreateCustomerResponseFromJSON,
     CreateCustomerResponseToJSON,
+    CustomerStatsResponseFromJSON,
+    CustomerStatsResponseToJSON,
     CustomerTransactionsResponseFromJSON,
     CustomerTransactionsResponseToJSON,
     GetCustomerBalanceStatsResponseFromJSON,
@@ -56,6 +59,10 @@ export interface CustomerControllerGetCustomerBalanceStatsRequest {
 
 export interface CustomerControllerGetCustomerDetailRequest {
     customerId: string;
+    xTenantId: string;
+}
+
+export interface CustomerControllerGetCustomerStatsRequest {
     xTenantId: string;
 }
 
@@ -285,6 +292,51 @@ export class CustomerApi extends runtime.BaseAPI {
      */
     async customerControllerGetCustomerDetail(requestParameters: CustomerControllerGetCustomerDetailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetCustomerDetailResponse> {
         const response = await this.customerControllerGetCustomerDetailRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get customer stats
+     */
+    async customerControllerGetCustomerStatsRaw(requestParameters: CustomerControllerGetCustomerStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CustomerStatsResponse>> {
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling customerControllerGetCustomerStats().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/customers/stats`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CustomerStatsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get customer stats
+     */
+    async customerControllerGetCustomerStats(requestParameters: CustomerControllerGetCustomerStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CustomerStatsResponse> {
+        const response = await this.customerControllerGetCustomerStatsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -6,6 +6,7 @@ import {
   type CustomerControllerGetAllRequest,
   type CustomerControllerGetCustomerBalanceStatsRequest,
   type CustomerControllerGetCustomerDetailRequest,
+  type CustomerControllerGetCustomerStatsRequest,
   type CustomerControllerGetCustomerTransactionsRequest,
 } from "@/gen"
 import { useLogto } from "@logto/react"
@@ -57,6 +58,20 @@ export function useGetCustomers({
         search,
         limit,
         page,
+      })
+    },
+  })
+}
+
+export function useGetCustomerStats({ xTenantId }: CustomerControllerGetCustomerStatsRequest) {
+  const { getClient } = useCustomerService()
+
+  return useQuery({
+    queryKey: ["customer-stats"],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.customerControllerGetCustomerStats({
+        xTenantId,
       })
     },
   })

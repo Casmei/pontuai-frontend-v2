@@ -12,10 +12,13 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { TransactionResponse } from './TransactionResponse';
 import {
     TransactionResponseFromJSON,
-    TransactionResponseToJSON
+    TransactionResponseFromJSONTyped,
+    TransactionResponseToJSON,
+    TransactionResponseToJSONTyped,
 } from './TransactionResponse';
 
 /**

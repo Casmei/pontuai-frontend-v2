@@ -13,6 +13,7 @@ models/CreateRewardResponse.ts
 models/CreateTenantDto.ts
 models/CreateTenantResponse.ts
 models/CustomerResponse.ts
+models/CustomerStatsResponse.ts
 models/CustomerTransactionsResponse.ts
 models/GetCustomerBalanceStatsResponse.ts
 models/GetCustomerDetailResponse.ts
