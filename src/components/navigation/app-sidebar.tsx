@@ -18,11 +18,11 @@ import {
 
 const fakeData = {
   Loja: [
-    // {
-    //   url: `/stores/$storeId/`,
-    //   title: "Dashboard",
-    //   icon: BarChart3,
-    // },
+    {
+      url: `/stores/$storeId/`,
+      title: "Dashboard",
+      icon: BarChart3,
+    },
     {
       url: `/stores/$storeId/settings`,
       title: "Configurações",

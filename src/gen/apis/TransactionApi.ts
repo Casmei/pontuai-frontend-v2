@@ -17,18 +17,18 @@ import * as runtime from '../runtime';
 import type {
   AddPointsDto,
   AddPointsResponse,
+  GetTransactionsStatsResponse,
   RedeemRewardDto,
-  TransactionResponse,
 } from '../models/index';
 import {
     AddPointsDtoFromJSON,
     AddPointsDtoToJSON,
     AddPointsResponseFromJSON,
     AddPointsResponseToJSON,
+    GetTransactionsStatsResponseFromJSON,
+    GetTransactionsStatsResponseToJSON,
     RedeemRewardDtoFromJSON,
     RedeemRewardDtoToJSON,
-    TransactionResponseFromJSON,
-    TransactionResponseToJSON,
 } from '../models/index';
 
 export interface TransactionControllerCreateRequest {
@@ -36,7 +36,7 @@ export interface TransactionControllerCreateRequest {
     addPointsDto: AddPointsDto;
 }
 
-export interface TransactionControllerGetAllRequest {
+export interface TransactionControllerGetStatsRequest {
     xTenantId: string;
 }
 
@@ -107,13 +107,46 @@ export class TransactionApi extends runtime.BaseAPI {
     }
 
     /**
-     * Find all transactions
+     * Yeah bitch, surprise
      */
-    async transactionControllerGetAllRaw(requestParameters: TransactionControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TransactionResponse>>> {
+    async transactionControllerGetAllRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/transaction`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Yeah bitch, surprise
+     */
+    async transactionControllerGetAll(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.transactionControllerGetAllRaw(initOverrides);
+    }
+
+    /**
+     * Get transactions stats
+     */
+    async transactionControllerGetStatsRaw(requestParameters: TransactionControllerGetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetTransactionsStatsResponse>> {
         if (requestParameters['xTenantId'] == null) {
             throw new runtime.RequiredError(
                 'xTenantId',
-                'Required parameter "xTenantId" was null or undefined when calling transactionControllerGetAll().'
+                'Required parameter "xTenantId" was null or undefined when calling transactionControllerGetStats().'
             );
         }
 
@@ -134,20 +167,20 @@ export class TransactionApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/transaction`,
+            path: `/transaction/stats`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TransactionResponseFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetTransactionsStatsResponseFromJSON(jsonValue));
     }
 
     /**
-     * Find all transactions
+     * Get transactions stats
      */
-    async transactionControllerGetAll(requestParameters: TransactionControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TransactionResponse>> {
-        const response = await this.transactionControllerGetAllRaw(requestParameters, initOverrides);
+    async transactionControllerGetStats(requestParameters: TransactionControllerGetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetTransactionsStatsResponse> {
+        const response = await this.transactionControllerGetStatsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

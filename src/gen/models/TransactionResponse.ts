@@ -12,21 +12,16 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RewardResponse } from './RewardResponse';
-import {
-    RewardResponseFromJSON,
-    RewardResponseFromJSONTyped,
-    RewardResponseToJSON,
-    RewardResponseToJSONTyped,
-} from './RewardResponse';
 import type { CustomerResponse } from './CustomerResponse';
 import {
     CustomerResponseFromJSON,
-    CustomerResponseFromJSONTyped,
-    CustomerResponseToJSON,
-    CustomerResponseToJSONTyped,
+    CustomerResponseToJSON
 } from './CustomerResponse';
+import type { RewardResponse } from './RewardResponse';
+import {
+    RewardResponseFromJSON,
+    RewardResponseToJSON
+} from './RewardResponse';
 
 /**
  * 

@@ -1,11 +1,6 @@
-import {
-  Configuration,
-  TenantApi,
-  type TenantControllerCreateRequest,
-  type TenantControllerUpdateConfigRequest,
-} from "@/gen"
+import { Configuration, TenantApi, type TenantControllerUpdateConfigRequest } from "@/gen"
 import { useLogto } from "@logto/react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -56,7 +51,9 @@ export const useGetStoreById = (id: string) => {
       const client = await getClient()
       const stores = await client.tenantControllerGetMyTenants()
       const store = stores.find((s) => s.id === id)
-      if (!store) throw new Error("Loja não encontrada")
+      if (!store) {
+        throw new Error("Loja não encontrada")
+      }
       return store
     },
     enabled: !!id,
@@ -90,29 +87,5 @@ export const useUpdateStoreConfig = () => {
     onSuccess: async (_, payload) => {
       await queryClient.invalidateQueries({ queryKey: ["stores"] })
     },
-  })
-}
-
-export const useGetStoreStats = (storeId: string) => {
-  return useQuery({
-    queryKey: ["storeStats", storeId],
-    queryFn: async () => {
-      console.log("Fetching store stats for storeId:", storeId)
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            totalCustomers: 42,
-            newCustomersThisMonth: 5,
-            totalSales: 12580.5,
-            salesThisMonth: 2340.75,
-            totalPointsRedeemed: 3750,
-            redeemedThisMonth: 850,
-            activePoints: 5280,
-            pointsEarnedThisMonth: 1240,
-          })
-        }, 800)
-      })
-    },
-    enabled: !!storeId,
   })
 }

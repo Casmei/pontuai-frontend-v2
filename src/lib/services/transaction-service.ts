@@ -2,12 +2,12 @@ import {
   Configuration,
   ResponseError,
   TransactionApi,
-  type TransactionControllerRedeemRequest,
   type TransactionControllerCreateRequest,
-  type TransactionControllerGetAllRequest,
+  type TransactionControllerGetStatsRequest,
+  type TransactionControllerRedeemRequest,
 } from "@/gen"
 import { useLogto } from "@logto/react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -40,7 +40,8 @@ const useTransactionsService = () => {
   return { getClient, isAuthenticated: logto.isAuthenticated }
 }
 
-export const useGetTransactions = (params: TransactionControllerGetAllRequest) => {
+// biome-ignore lint/suspicious/noExplicitAny: TODO: Entender por que n estou conseguindo exportar o tipo aqui
+export const useGetTransactions = (params: any) => {
   const { getClient } = useTransactionsService()
 
   return useQuery({
@@ -48,6 +49,19 @@ export const useGetTransactions = (params: TransactionControllerGetAllRequest) =
     queryFn: async () => {
       const client = await getClient()
       return client.transactionControllerGetAll(params)
+    },
+    enabled: !!params,
+  })
+}
+
+export const useGetTransactionsStats = (params: TransactionControllerGetStatsRequest) => {
+  const { getClient } = useTransactionsService()
+
+  return useQuery({
+    queryKey: ["transactions-stats", params],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.transactionControllerGetStats(params)
     },
     enabled: !!params,
   })

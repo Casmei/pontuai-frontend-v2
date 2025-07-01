@@ -1,15 +1,15 @@
 import {
   Configuration,
   CustomerApi,
-  type CustomerControllerGetCustomerBalanceStatsRequest,
-  type CustomerControllerGetCustomerTransactionsRequest,
   ResponseError,
   type CustomerControllerCreateRequest,
   type CustomerControllerGetAllRequest,
+  type CustomerControllerGetCustomerBalanceStatsRequest,
   type CustomerControllerGetCustomerDetailRequest,
+  type CustomerControllerGetCustomerTransactionsRequest,
 } from "@/gen"
 import { useLogto } from "@logto/react"
-import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -31,6 +31,8 @@ const useCustomerService = () => {
       throw new Error("Token não encontrado")
     }
 
+    console.log(token)
+
     return createApiClient(token)
   }
 
@@ -50,7 +52,12 @@ export function useGetCustomers({
     queryKey: ["customer", search, page, xTenantId],
     queryFn: async () => {
       const client = await getClient()
-      return client.customerControllerGetAll({ xTenantId, search, limit, page })
+      return client.customerControllerGetAll({
+        xTenantId,
+        search,
+        limit,
+        page,
+      })
     },
   })
 }

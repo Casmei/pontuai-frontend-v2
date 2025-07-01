@@ -194,6 +194,16 @@ paths:
         - Transaction
     get:
       operationId: TransactionController_getAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Yeah bitch, surprise
+      tags:
+        - Transaction
+  /transaction/stats:
+    get:
+      operationId: TransactionController_getStats
       parameters:
         - name: x-tenant-id
           in: header
@@ -206,14 +216,12 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TransactionResponse'
+                $ref: '#/components/schemas/GetTransactionsStatsResponse'
         '400':
           description: Bad request
         '401':
           description: Unauthorized
-      summary: Find all transactions
+      summary: Get transactions stats
       tags:
         - Transaction
   /transaction/{id}/redeem:
@@ -751,6 +759,32 @@ components:
         - rewardId
         - createdAt
         - updatedAt
+    GetTransactionsStatsResponse:
+      type: object
+      properties:
+        expiredPoints:
+          type: number
+          example: 300
+        earnedPoints:
+          type: number
+          example: 100
+        redeemedPoints:
+          type: number
+          example: 100
+        availablePoints:
+          type: number
+          example: 1536
+        transactions:
+          description: List of transactions
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponse'
+      required:
+        - expiredPoints
+        - earnedPoints
+        - redeemedPoints
+        - availablePoints
+        - transactions
     RedeemRewardDto:
       type: object
       properties:
