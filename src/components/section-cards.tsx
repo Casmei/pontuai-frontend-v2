@@ -1,5 +1,4 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CustomerStatsResponse, GetTransactionsStatsResponse } from "@/gen";
 import { BadgeCheck, Gift, TrendingDown, TrendingUp } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
@@ -22,12 +21,12 @@ export function SectionCards(props: SectionCardsProps) {
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {props.customerStats?.total}
           </CardTitle>
-          <CardAction>
+          {/* <CardAction>
             <Badge variant="outline">
               <TrendingUp />
               +12.5%
             </Badge>
-          </CardAction>
+          </CardAction> */}
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
@@ -88,12 +87,12 @@ export function SectionCards(props: SectionCardsProps) {
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {props.transactionStats?.availablePoints}
           </CardTitle>
-          <CardAction>
+          {/* <CardAction>
             <Badge variant="outline">
               <TrendingUp />
               +4.5%
             </Badge>
-          </CardAction>
+          </CardAction> */}
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
@@ -108,12 +107,12 @@ export function SectionCards(props: SectionCardsProps) {
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
             {props.transactionStats?.expiredPoints}
           </CardTitle>
-          <CardAction>
+          {/* <CardAction>
             <Badge variant="outline">
               <TrendingUp />
               +4.5%
             </Badge>
-          </CardAction>
+          </CardAction> */}
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
