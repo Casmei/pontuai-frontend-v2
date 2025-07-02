@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   CreateRewardDto,
   CreateRewardResponse,
+  GetRewardStatsResponse,
   UpdateRewardDto,
 } from '../models/index';
 import {
@@ -24,6 +25,8 @@ import {
     CreateRewardDtoToJSON,
     CreateRewardResponseFromJSON,
     CreateRewardResponseToJSON,
+    GetRewardStatsResponseFromJSON,
+    GetRewardStatsResponseToJSON,
     UpdateRewardDtoFromJSON,
     UpdateRewardDtoToJSON,
 } from '../models/index';
@@ -35,6 +38,10 @@ export interface RewardControllerAllRequest {
 export interface RewardControllerCreateRequest {
     xTenantId: string;
     createRewardDto: CreateRewardDto;
+}
+
+export interface RewardControllerGetRewardStatsRequest {
+    xTenantId: string;
 }
 
 export interface RewardControllerUpdateRequest {
@@ -145,6 +152,51 @@ export class RewardApi extends runtime.BaseAPI {
      */
     async rewardControllerCreate(requestParameters: RewardControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateRewardResponse> {
         const response = await this.rewardControllerCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get reward stats
+     */
+    async rewardControllerGetRewardStatsRaw(requestParameters: RewardControllerGetRewardStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GetRewardStatsResponse>>> {
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling rewardControllerGetRewardStats().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/reward/stats`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GetRewardStatsResponseFromJSON));
+    }
+
+    /**
+     * Get reward stats
+     */
+    async rewardControllerGetRewardStats(requestParameters: RewardControllerGetRewardStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GetRewardStatsResponse>> {
+        const response = await this.rewardControllerGetRewardStatsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

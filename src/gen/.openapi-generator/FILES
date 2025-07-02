@@ -17,6 +17,7 @@ models/CustomerStatsResponse.ts
 models/CustomerTransactionsResponse.ts
 models/GetCustomerBalanceStatsResponse.ts
 models/GetCustomerDetailResponse.ts
+models/GetRewardStatsResponse.ts
 models/GetTenant.ts
 models/GetTransactionsStatsResponse.ts
 models/PaginatedCustomerResponse.ts

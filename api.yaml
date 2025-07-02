@@ -396,6 +396,31 @@ paths:
       summary: Get all rewards
       tags:
         - Reward
+  /reward/stats:
+    get:
+      operationId: RewardController_getRewardStats
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetRewardStatsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Get reward stats
+      tags:
+        - Reward
   /reward/{id}:
     patch:
       operationId: RewardController_update
@@ -1048,6 +1073,20 @@ components:
         - description
         - point_value
         - tenant_id
+    GetRewardStatsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the reward
+          example: 10% de desconto
+        total:
+          type: number
+          description: Total de vezes que o reward foi resgatado
+          example: 100
+      required:
+        - name
+        - total
     UpdateRewardDto:
       type: object
       properties:

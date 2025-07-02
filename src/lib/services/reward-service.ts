@@ -1,7 +1,11 @@
-import { Configuration, RewardApi, type RewardControllerAllRequest } from "@/gen"
+import {
+  Configuration,
+  RewardApi,
+  RewardControllerGetRewardStatsRequest,
+  type RewardControllerAllRequest,
+} from "@/gen"
 import { useLogto } from "@logto/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { useQuery } from "@tanstack/react-query"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -44,6 +48,18 @@ export function useGetRewards(
     queryFn: async () => {
       const client = await getClient()
       return client.rewardControllerAll({ xTenantId })
+    },
+  })
+}
+
+export function useGetRewardStats(data: RewardControllerGetRewardStatsRequest) {
+  const { getClient } = useRewardService()
+
+  return useQuery({
+    queryKey: ["reward-stats"],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.rewardControllerGetRewardStats(data)
     },
   })
 }
