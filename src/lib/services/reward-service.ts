@@ -1,11 +1,12 @@
 import {
   Configuration,
   RewardApi,
-  RewardControllerGetRewardStatsRequest,
   type RewardControllerAllRequest,
+  type RewardControllerCreateRequest,
+  type RewardControllerGetRewardStatsRequest,
 } from "@/gen"
 import { useLogto } from "@logto/react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -44,7 +45,7 @@ export function useGetRewards(
   return useQuery({
     enabled: options?.enabled,
     staleTime: options?.staleTime,
-    queryKey: ["reward"],
+    queryKey: ["rewards"],
     queryFn: async () => {
       const client = await getClient()
       return client.rewardControllerAll({ xTenantId })
@@ -60,6 +61,21 @@ export function useGetRewardStats(data: RewardControllerGetRewardStatsRequest) {
     queryFn: async () => {
       const client = await getClient()
       return client.rewardControllerGetRewardStats(data)
+    },
+  })
+}
+
+export const useCreateReward = () => {
+  const { getClient } = useRewardService()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: RewardControllerCreateRequest) => {
+      const client = await getClient()
+      return client.rewardControllerCreate(data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rewards"] })
     },
   })
 }

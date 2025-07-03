@@ -65,22 +65,23 @@ export function NavCommon({ items, title }: Props) {
           <Collapsible
             key={item.title}
             asChild
-            // defaultOpen={pathname.startsWith(item.url) && item.url !== "/stores"}
             className="group/collapsible"
           >
             <SidebarMenuItem>
               {item.items?.length && <CollapsibleNavItem {...item} />}
 
               {!item.items?.length && (
-                <Link to={item.url} params={{ storeId }}>
-                  {({ isActive }) => {
-                    return (
-                      <SidebarMenuButton isActive={isActive && item.url != "/stores/$storeId/"}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
-                      </SidebarMenuButton>
-                    )
-                  }}
+                <Link
+                  to={item.url}
+                  params={{ storeId }}
+                  activeOptions={{ exact: true }}
+                >
+                  {({ isActive }) => (
+                    <SidebarMenuButton isActive={isActive} >
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  )}
                 </Link>
               )}
             </SidebarMenuItem>

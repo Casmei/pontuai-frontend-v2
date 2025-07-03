@@ -1,9 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,7 +12,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useCreateReward } from "@/lib/services/reward-service"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { z } from "zod"
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -30,6 +31,7 @@ interface RewardFormProps {
 
 export function RewardForm({ storeId }: RewardFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { mutateAsync: createReward } = useCreateReward()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,14 +45,16 @@ export function RewardForm({ storeId }: RewardFormProps) {
   async function onSubmit({ name, pointsRequired, description }: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true)
-      // await createRewardAction({
-      //   xTenantId: storeId,
-      //   createRewardDto: {
-      //     name,
-      //     description: description || "",
-      //     pointValue: pointsRequired,
-      //   },
-      // })
+
+      await createReward({
+        xTenantId: storeId,
+        createRewardDto: {
+          name,
+          description: description || "",
+          pointValue: pointsRequired,
+        },
+      })
+
       toast.success("Recompensa adicionada", {
         description: "A recompensa foi adicionada com sucesso.",
       })

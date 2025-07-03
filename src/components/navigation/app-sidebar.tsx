@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3, Gift, Receipt, Settings, Users, House } from "lucide-react"
+import { BarChart3, Gift, House, Settings, Users } from "lucide-react"
 import * as React from "react"
 
 import { NavCommon } from "@/components/navigation/nav-common"
@@ -33,11 +33,11 @@ const fakeData = {
       title: "Clientes",
       icon: Users,
     },
-    // {
-    //   url: `/stores/$storeId/rewards`,
-    //   title: "Recompensas",
-    //   icon: Gift,
-    // },
+    {
+      url: `/stores/$storeId/rewards`,
+      title: "Recompensas",
+      icon: Gift,
+    },
     // {
     //   url: `/stores/$storeId/transactions`,
     //   title: "Transações",
