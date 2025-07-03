@@ -1,4 +1,9 @@
-import { Configuration, TenantApi, type TenantControllerUpdateConfigRequest } from "@/gen"
+import {
+  Configuration,
+  TenantApi,
+  type TenantControllerCreateRequest,
+  type TenantControllerUpdateConfigRequest,
+} from "@/gen"
 import { useLogto } from "@logto/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -16,8 +21,6 @@ const useTenantsService = () => {
     }
 
     const token = await logto.getAccessToken("https://pontuai-api.kontact.com.br")
-
-    console.log("TOKEN: ", token)
 
     if (!token) {
       throw new Error("Token não encontrado")
@@ -60,20 +63,20 @@ export const useGetStoreById = (id: string) => {
   })
 }
 
-// export const useCreateStore = () => {
-//   const { getClient } = useTenantsService()
-//   const queryClient = useQueryClient()
+export const useCreateStore = () => {
+  const { getClient } = useTenantsService()
+  const queryClient = useQueryClient()
 
-//   return useMutation({
-//     mutationFn: async (data: TenantControllerCreateRequest) => {
-//       const client = await getClient()
-//       return client.tenantControllerCreate(data)
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ["stores"] })
-//     },
-//   })
-// }
+  return useMutation({
+    mutationFn: async (data: TenantControllerCreateRequest) => {
+      const client = await getClient()
+      return client.tenantControllerCreate(data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stores"] })
+    },
+  })
+}
 
 export const useUpdateStoreConfig = () => {
   const { getClient } = useTenantsService()

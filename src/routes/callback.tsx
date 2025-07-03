@@ -1,9 +1,10 @@
-// src/routes/callback.tsx
-import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { useGetStores } from "@/lib/services/store-service";
+import { cn } from "@/lib/utils";
 import { useHandleSignInCallback } from "@logto/react";
+import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";          // shadcn/ui
-import { cn } from "@/lib/utils";                         // helper opcional
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/callback")({
   component: CallbackRoute,
@@ -12,15 +13,20 @@ export const Route = createFileRoute("/callback")({
 function CallbackRoute() {
   const navigate = Route.useNavigate();
 
-  // Logto lida com o código ?callback=… e devolve loading / erro
-  const { isLoading, error } = useHandleSignInCallback(() => {
-    navigate({ to: "/stores" });
-  });
+  const { isLoading: isAuthLoading, error } = useHandleSignInCallback();
+  const { data: stores, isLoading: isStoresLoading } = useGetStores();
 
-  /* ---------------------------------------------------------------------- */
-  /*  Loading                                                               */
-  /* ---------------------------------------------------------------------- */
-  if (isLoading) {
+  useEffect(() => {
+    if (!isAuthLoading && !error && !isStoresLoading && stores) {
+      if (stores.length === 0) {
+        navigate({ to: "/stores/create" });
+      } else {
+        navigate({ to: "/stores/$storeId", params: { storeId: stores[0].id } });
+      }
+    }
+  }, [isAuthLoading, isStoresLoading, error, stores, navigate]);
+
+  if (isAuthLoading || isStoresLoading) {
     return (
       <div
         className={cn(
@@ -35,9 +41,6 @@ function CallbackRoute() {
     );
   }
 
-  /* ---------------------------------------------------------------------- */
-  /*  Erro                                                                  */
-  /* ---------------------------------------------------------------------- */
   if (error) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center gap-6">
@@ -53,8 +56,5 @@ function CallbackRoute() {
     );
   }
 
-  /* ---------------------------------------------------------------------- */
-  /*  Nada a renderizar após o redirect                                     */
-  /* ---------------------------------------------------------------------- */
   return null;
 }
