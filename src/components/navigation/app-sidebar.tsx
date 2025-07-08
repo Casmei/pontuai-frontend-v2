@@ -1,7 +1,5 @@
-"use client"
-
+import { IdTokenClaims, useLogto } from "@logto/react"
 import { BarChart3, Gift, House, Settings, Users } from "lucide-react"
-import * as React from "react"
 
 import { NavCommon } from "@/components/navigation/nav-common"
 import { NavUser } from "@/components/navigation/nav-user"
@@ -15,6 +13,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useGetStoreById } from "@/lib/services/store-service"
+import { useEffect, useState } from "react"
 
 const fakeData = {
   Loja: [
@@ -37,20 +37,31 @@ const fakeData = {
       url: `/stores/$storeId/rewards`,
       title: "Recompensas",
       icon: Gift,
-    },
-    // {
-    //   url: `/stores/$storeId/transactions`,
-    //   title: "Transações",
-    //   icon: Receipt,
-    // },
+    }
   ],
 }
 
 type Props = React.ComponentProps<typeof Sidebar> & {
   data?: typeof fakeData
+  storeId: string
 }
 
-export function AppSidebar({ data = fakeData, ...props }: Props) {
+export function AppSidebar({ data = fakeData, storeId, ...props }: Props) {
+
+  const { data: store } = useGetStoreById(storeId)
+  const { isAuthenticated, getIdTokenClaims } = useLogto();
+  const [user, setUser] = useState<IdTokenClaims>();
+
+  useEffect(() => {
+    (async () => {
+      if (isAuthenticated) {
+        const claims = await getIdTokenClaims();
+        setUser(claims);
+      }
+    })();
+  }, [getIdTokenClaims, isAuthenticated]);
+
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -62,7 +73,7 @@ export function AppSidebar({ data = fakeData, ...props }: Props) {
                   <House className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Usuário de teste</span>
+                  <span className="font-semibold">{store?.name || "Sua Loja"}</span>
                   <span className="">Administrador</span>
                 </div>
               </a>
@@ -76,9 +87,9 @@ export function AppSidebar({ data = fakeData, ...props }: Props) {
       <SidebarFooter>
         <NavUser
           user={{
-            name: "Teste",
-            email: "Teste",
-            avatar: "Teste",
+            name: user?.username || "Teste",
+            email: user?.email || "Teste",
+            avatar: user?.username || "Pontuai",
           }}
         />
       </SidebarFooter>

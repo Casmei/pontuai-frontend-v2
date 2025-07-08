@@ -32,8 +32,6 @@ const useCustomerService = () => {
       throw new Error("Token não encontrado")
     }
 
-    console.log(token)
-
     return createApiClient(token)
   }
 
