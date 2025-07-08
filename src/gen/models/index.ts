@@ -25,3 +25,6 @@ export * from './TransactionResponse';
 export * from './UpdateRewardDto';
 export * from './UpdateTenantSettingsDto';
 export * from './WhatsappConfig';
+export * from './WhatsappNotificationMapResponse';
+export * from './WhatsappNotificationTemplate';
+export * from './WhatsappNotificationVariable';

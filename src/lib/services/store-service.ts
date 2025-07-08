@@ -1,7 +1,9 @@
 import {
   Configuration,
   TenantApi,
+  TenantControllerUpdateNotificationsRequest,
   type TenantControllerCreateRequest,
+  type TenantControllerGetNotificationsRequest,
   type TenantControllerUpdateConfigRequest,
 } from "@/gen"
 import { useLogto } from "@logto/react"
@@ -63,6 +65,18 @@ export const useGetStoreById = (id: string) => {
   })
 }
 
+export const useGetStoreNotifications = (data: TenantControllerGetNotificationsRequest) => {
+  const { getClient } = useTenantsService()
+
+  return useQuery({
+    queryKey: ["store-notifications", data.xTenantId],
+    queryFn: async () => {
+      const client = await getClient()
+      return client.tenantControllerGetNotifications(data)
+    },
+  })
+}
+
 export const useCreateStore = () => {
   const { getClient } = useTenantsService()
   const queryClient = useQueryClient()
@@ -74,6 +88,21 @@ export const useCreateStore = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stores"] })
+    },
+  })
+}
+
+export const useUpdateStoreNotifications = () => {
+  const { getClient } = useTenantsService()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: TenantControllerUpdateNotificationsRequest) => {
+      const client = await getClient()
+      return client.tenantControllerUpdateNotifications(data)
+    },
+    onSuccess: async (_, payload) => {
+      queryClient.invalidateQueries({ queryKey: ["store-notifications", payload.xTenantId] })
     },
   })
 }

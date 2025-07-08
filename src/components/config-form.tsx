@@ -1,12 +1,7 @@
 "use client"
 
-import { useCallback, useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -16,9 +11,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { toast } from "sonner"
-import { TenantConfig } from "@/gen"
+import { Input } from "@/components/ui/input"
+import type { TenantConfig } from "@/gen"
 import { useUpdateStoreConfig } from "@/lib/services/store-service"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useCallback, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const formSchema = z.object({
   pointsForMoneySpent: z.coerce.number().min(0.1, "Deve ser pelo menos 0.1"),

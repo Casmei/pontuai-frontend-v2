@@ -29,5 +29,8 @@ models/TransactionResponse.ts
 models/UpdateRewardDto.ts
 models/UpdateTenantSettingsDto.ts
 models/WhatsappConfig.ts
+models/WhatsappNotificationMapResponse.ts
+models/WhatsappNotificationTemplate.ts
+models/WhatsappNotificationVariable.ts
 models/index.ts
 runtime.ts

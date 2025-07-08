@@ -343,6 +343,57 @@ paths:
       summary: Update tenant settings
       tags:
         - Tenant
+  /tenant/config/notifications:
+    get:
+      operationId: TenantController_getNotifications
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tenant notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatsappNotificationMapResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Get tenant notifications
+      tags:
+        - Tenant
+    patch:
+      operationId: TenantController_updateNotifications
+      parameters:
+        - name: x-tenant-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantNotificationsDto'
+      responses:
+        '200':
+          description: Update tenant notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatsappNotificationMapResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+      summary: Update tenant notifications
+      tags:
+        - Tenant
   /reward:
     post:
       operationId: RewardController_create
@@ -1025,6 +1076,77 @@ components:
         - slug
         - active
         - config
+    WhatsappNotificationVariable:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Chave da variável usada no template (com chaves)
+          example: '{{customer_name}}'
+        description:
+          type: string
+          description: Descrição do que representa essa variável
+          example: Nome do cliente
+      required:
+        - key
+        - description
+    WhatsappNotificationTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nome do template de notificação
+          example: Pontos Adicionados
+        description:
+          type: string
+          description: Descrição da situação em que o template é usado
+          example: Mensagem enviada quando pontos são adicionados à conta do cliente
+        variables:
+          description: Lista de variáveis disponíveis para interpolação no template
+          type: array
+          items:
+            $ref: '#/components/schemas/WhatsappNotificationVariable'
+        defaultMessage:
+          type: string
+          description: Mensagem padrão com placeholders que será enviada por WhatsApp
+          example: >-
+            Olá {{customer_name}}, você ganhou {{points_added}} pontos na
+            {{store_name}}!
+      required:
+        - name
+        - description
+        - variables
+        - defaultMessage
+    WhatsappNotificationMapResponse:
+      type: object
+      properties:
+        customer.new:
+          description: Template para 'customer.new'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+        transaction.add_points:
+          description: Template para 'transaction.add_points'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+        transaction.redeem_points:
+          description: Template para 'transaction.redeem_points'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+        transaction.expire_points_1_days:
+          description: Template para 'transaction.expire_points_1_days'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+        transaction.expire_points_3_days:
+          description: Template para 'transaction.expire_points_3_days'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+        transaction.expire_points_7_days:
+          description: Template para 'transaction.expire_points_7_days'
+          allOf:
+            - $ref: '#/components/schemas/WhatsappNotificationTemplate'
+    UpdateTenantNotificationsDto:
+      type: object
+      properties: {}
     CreateRewardDto:
       type: object
       properties:

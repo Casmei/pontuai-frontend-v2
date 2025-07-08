@@ -19,6 +19,7 @@ import type {
   CreateTenantResponse,
   GetTenant,
   UpdateTenantSettingsDto,
+  WhatsappNotificationMapResponse,
 } from '../models/index';
 import {
     CreateTenantDtoFromJSON,
@@ -29,15 +30,26 @@ import {
     GetTenantToJSON,
     UpdateTenantSettingsDtoFromJSON,
     UpdateTenantSettingsDtoToJSON,
+    WhatsappNotificationMapResponseFromJSON,
+    WhatsappNotificationMapResponseToJSON,
 } from '../models/index';
 
 export interface TenantControllerCreateRequest {
     createTenantDto: CreateTenantDto;
 }
 
+export interface TenantControllerGetNotificationsRequest {
+    xTenantId: string;
+}
+
 export interface TenantControllerUpdateConfigRequest {
     tenantId: string;
     updateTenantSettingsDto: UpdateTenantSettingsDto;
+}
+
+export interface TenantControllerUpdateNotificationsRequest {
+    xTenantId: string;
+    body: object;
 }
 
 /**
@@ -124,6 +136,51 @@ export class TenantApi extends runtime.BaseAPI {
     }
 
     /**
+     * Get tenant notifications
+     */
+    async tenantControllerGetNotificationsRaw(requestParameters: TenantControllerGetNotificationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WhatsappNotificationMapResponse>> {
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling tenantControllerGetNotifications().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/tenant/config/notifications`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WhatsappNotificationMapResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get tenant notifications
+     */
+    async tenantControllerGetNotifications(requestParameters: TenantControllerGetNotificationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WhatsappNotificationMapResponse> {
+        const response = await this.tenantControllerGetNotificationsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Update tenant settings
      */
     async tenantControllerUpdateConfigRaw(requestParameters: TenantControllerUpdateConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -171,6 +228,61 @@ export class TenantApi extends runtime.BaseAPI {
      */
     async tenantControllerUpdateConfig(requestParameters: TenantControllerUpdateConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.tenantControllerUpdateConfigRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Update tenant notifications
+     */
+    async tenantControllerUpdateNotificationsRaw(requestParameters: TenantControllerUpdateNotificationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WhatsappNotificationMapResponse>> {
+        if (requestParameters['xTenantId'] == null) {
+            throw new runtime.RequiredError(
+                'xTenantId',
+                'Required parameter "xTenantId" was null or undefined when calling tenantControllerUpdateNotifications().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling tenantControllerUpdateNotifications().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['xTenantId'] != null) {
+            headerParameters['x-tenant-id'] = String(requestParameters['xTenantId']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/tenant/config/notifications`,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WhatsappNotificationMapResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Update tenant notifications
+     */
+    async tenantControllerUpdateNotifications(requestParameters: TenantControllerUpdateNotificationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WhatsappNotificationMapResponse> {
+        const response = await this.tenantControllerUpdateNotificationsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }
