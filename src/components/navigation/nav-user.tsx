@@ -1,10 +1,9 @@
-import { ChevronsUpDown, LogOut, Settings2Icon } from "lucide-react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -23,6 +22,7 @@ export function NavUser({
   }
 }) {
   const { signOut } = useLogto()
+  const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
 
   return (
     <SidebarMenu>
@@ -68,7 +68,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut("/")}>
+            <DropdownMenuItem onClick={() => signOut(VITE_FRONTEND_URL)}>
               <LogOut />
               Sair
             </DropdownMenuItem>
