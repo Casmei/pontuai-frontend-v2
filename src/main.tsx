@@ -36,6 +36,7 @@ if (!rootElement.innerHTML) {
           endpoint: "https://0zyxhw.logto.app/",
           appId: "osxcdqwhvkx7n7l9s1ie6",
           resources: ["https://pontuai-api.kontact.com.br"],
+          scopes: ["openid", "profile", "email", "offline_access"],
         }}
       >
         <QueryClientProvider client={queryClient}>
