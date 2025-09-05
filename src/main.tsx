@@ -33,10 +33,9 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <LogtoProvider
         config={{
-          endpoint: "https://0zyxhw.logto.app/",
-          appId: "osxcdqwhvkx7n7l9s1ie6",
+          endpoint: "https://lb61uu.logto.app/",
+          appId: "0ovqsuv17kut1p5mayk04",
           resources: ["https://pontuai-api.kontact.com.br"],
-          scopes: ["openid", "profile", "email", "offline_access"],
         }}
       >
         <QueryClientProvider client={queryClient}>
